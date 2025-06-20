@@ -1,0 +1,1 @@
+rootProject.name = "faspay-sendme-snap-java"
