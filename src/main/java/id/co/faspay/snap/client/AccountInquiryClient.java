@@ -16,7 +16,6 @@ import java.util.Objects;
  */
 public class AccountInquiryClient {
     private static final Logger logger = LoggerFactory.getLogger(AccountInquiryClient.class);
-    private static final String ACCOUNT_INQUIRY_ENDPOINT = "/disbursement/account-inquiry";
 
     private final Constants constants;
 
