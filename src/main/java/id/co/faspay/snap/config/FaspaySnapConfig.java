@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  * methods for generating unique identifiers and timestamps.
  * This class extends the Constants class to utilize predefined URLs and constants.
  */
-public class FaspaySnapConfig extends Constants {
+public class FaspaySnapConfig {
     private static final Logger logger = LoggerFactory.getLogger(FaspaySnapConfig.class);
 
     protected String baseUrl;

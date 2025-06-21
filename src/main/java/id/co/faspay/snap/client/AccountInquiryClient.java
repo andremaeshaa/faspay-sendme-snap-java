@@ -64,7 +64,7 @@ public class AccountInquiryClient {
         logger.info("Inquiring about account {} at bank {}", request.getAccountNumber(), request.getBankCode());
         
         try {
-            AccountInquiryResponse response = httpClient.post(constants.getEndpointAccountInquiry(), request, AccountInquiryResponse.class);
+            AccountInquiryResponse response = httpClient.post(constants.getEndpointAccountInquiry(), constants.getUserAgent(), request, AccountInquiryResponse.class);
             
             logger.info("Account inquiry completed with status: {}", response.getStatus());
             

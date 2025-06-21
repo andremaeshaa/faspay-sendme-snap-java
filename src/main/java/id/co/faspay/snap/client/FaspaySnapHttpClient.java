@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import id.co.faspay.snap.config.FaspaySnapConfig;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
+import id.co.faspay.snap.model.Constants;
 import id.co.faspay.snap.util.SignatureUtil;
 import okhttp3.*;
 import org.slf4j.Logger;
@@ -59,7 +60,7 @@ public class FaspaySnapHttpClient {
      * @return The response from the API
      * @throws FaspaySnapApiException If an error occurs while making the request
      */
-    public <T> T post(String endpoint, Object requestBody, Class<T> responseType) throws FaspaySnapApiException {
+    public <T> T post(String endpoint, String userAgent, Object requestBody, Class<T> responseType) throws FaspaySnapApiException {
         try {
             String url = config.getBaseUrl() + endpoint;
 //            String requestJson = objectMapper.writeValueAsString(requestBody);
@@ -74,6 +75,8 @@ public class FaspaySnapHttpClient {
                     .url(url)
                     .post(RequestBody.create(requestJson, JSON))
                     .header("Content-Type", "application/json")
+                    .header("Accept", "application/json")
+                    .header("User-Agent", userAgent)
                     .header("X-TIMESTAMP", config.getTimestamp())
                     .header("X-Signature", signature)
                     .header("X-Partner-Id", config.getPartnerId())
