@@ -5,8 +5,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.time.ZonedDateTime;
@@ -80,7 +78,18 @@ public class FaspaySnapConfig extends Constants {
     }
 
     /**
-     * Initializes the SSL context with the provided certificate.
+     * Initializes the SSL context using the provided SSL certificate file path. This method:
+     * - Loads an X.509 certificate from the file specified by the sslCertPath field.
+     * - Creates a key store and adds the loaded certificate to it.
+     * - Configures a TrustManagerFactory with the key store.
+     * - Initializes an SSLContext using the created trust managers.
+     * -
+     * If the initialization fails due to any exceptions, an error is logged and a runtime exception is thrown.
+     * -
+     * This method is intended to ensure secure communication by properly setting up
+     * the SSL context and trust managers before making API calls.
+     *
+     * @throws RuntimeException If the SSL context initialization fails
      */
     private void initSslContext() {
         try {
@@ -111,13 +120,12 @@ public class FaspaySnapConfig extends Constants {
     }
 
     /**
-     * Loads an X.509 certificate from the given input stream.
-     * This method supports PEM-encoded X.509 certificates.
+     * Loads an X.509 certificate from the provided input stream.
      *
-     * @param is The input stream containing the certificate
-     * @return The loaded X.509 certificate
-     * @throws CertificateException If the certificate cannot be loaded
-     * @throws IOException If an I/O error occurs
+     * @param is The input stream containing the certificate data.
+     * @return An X509Certificate object representing the loaded certificate.
+     * @throws CertificateException If the certificate cannot be parsed or is invalid.
+     * @throws IOException If an I/O error occurs during certificate loading.
      */
     private X509Certificate loadCertificate(InputStream is) throws CertificateException, IOException {
         try {
@@ -147,6 +155,13 @@ public class FaspaySnapConfig extends Constants {
         return partnerId;
     }
 
+    /**
+     * Generates a unique external ID which combines the partner ID, current timestamp,
+     * and a random number.
+     *
+     * @return A unique external identifier in the format of partner ID concatenated
+     *         with the current timestamp in milliseconds and a random integer.
+     */
     public String getExternalId() {
         long miliseconds = Math.round((double) System.nanoTime() / 1_000_000);
         Random random = new Random();
@@ -155,6 +170,11 @@ public class FaspaySnapConfig extends Constants {
         return String.format("%s%d%d", partnerId, miliseconds, randomNum);
     }
 
+    /**
+     * Generates a timestamp in the ISO 8601 format with time zone (e.g., yyyy-MM-dd'T'HH:mm:ssXXX).
+     *
+     * @return The current timestamp as a string.
+     */
     public String getTimestamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         return ZonedDateTime.now().format(formatter);
