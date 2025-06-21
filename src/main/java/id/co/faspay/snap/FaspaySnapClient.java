@@ -2,6 +2,7 @@ package id.co.faspay.snap;
 
 import id.co.faspay.snap.config.FaspaySnapConfig;
 import id.co.faspay.snap.service.AccountInquiryService;
+import id.co.faspay.snap.service.TransferInterbankService;
 
 /**
  * Main entry point for the Faspay SendMe Snap API SDK.
@@ -10,6 +11,7 @@ import id.co.faspay.snap.service.AccountInquiryService;
 public class FaspaySnapClient {
     private final FaspaySnapConfig config;
     private final AccountInquiryService accountInquiryService;
+    private final TransferInterbankService transferInterbankService;
 
     /**
      * Creates a new Faspay SendMe Snap API client with the provided configuration.
@@ -19,6 +21,7 @@ public class FaspaySnapClient {
     public FaspaySnapClient(FaspaySnapConfig config) {
         this.config = config;
         this.accountInquiryService = new AccountInquiryService(config);
+        this.transferInterbankService = new TransferInterbankService(config);
     }
 
     /**
@@ -28,6 +31,15 @@ public class FaspaySnapClient {
      */
     public AccountInquiryService accountInquiry() {
         return accountInquiryService;
+    }
+
+    /**
+     * Gets the service for Transfer Interbank operations.
+     *
+     * @return The Transfer Interbank service
+     */
+    public TransferInterbankService transferInterbank() {
+        return transferInterbankService;
     }
 
     /**
