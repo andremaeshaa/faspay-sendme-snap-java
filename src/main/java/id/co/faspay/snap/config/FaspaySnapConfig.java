@@ -1,8 +1,6 @@
 package id.co.faspay.snap.config;
 
-import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -22,8 +20,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Configuration for the Faspay SendMe Snap API SDK.
- * This class holds all the necessary configuration parameters for connecting to the Faspay API.
+ * The FaspaySnapConfig class is responsible for managing the configuration
+ * for interacting with the Faspay API. This includes managing environment-specific
+ * base URLs, partner authentication details, SSL configurations, and utility
+ * methods for generating unique identifiers and timestamps.
+ * This class extends the Constants class to utilize predefined URLs and constants.
  */
 public class FaspaySnapConfig extends Constants {
     private static final Logger logger = LoggerFactory.getLogger(FaspaySnapConfig.class);
@@ -97,8 +98,8 @@ public class FaspaySnapConfig extends Constants {
             keyStore.load(null, null);
 
             // Load the certificate
-            try (InputStream is = new FileInputStream(new File(sslCertPath))) {
-                System.out.println("Loading certificate from: " + is.toString());
+            try (InputStream is = new FileInputStream(sslCertPath)) {
+                System.out.println("Loading certificate from: " + is);
 
                 X509Certificate cert = loadCertificate(is);
                 keyStore.setCertificateEntry("faspay-cert", cert);
@@ -125,9 +126,8 @@ public class FaspaySnapConfig extends Constants {
      * @param is The input stream containing the certificate data.
      * @return An X509Certificate object representing the loaded certificate.
      * @throws CertificateException If the certificate cannot be parsed or is invalid.
-     * @throws IOException If an I/O error occurs during certificate loading.
      */
-    private X509Certificate loadCertificate(InputStream is) throws CertificateException, IOException {
+    private X509Certificate loadCertificate(InputStream is) throws CertificateException {
         try {
             java.security.cert.CertificateFactory cf = java.security.cert.CertificateFactory.getInstance("X.509");
             return (X509Certificate) cf.generateCertificate(is);
