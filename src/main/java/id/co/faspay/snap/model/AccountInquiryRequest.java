@@ -147,11 +147,9 @@ public class AccountInquiryRequest {
      * Sets the source account in the additional info.
      *
      * @param sourceAccount The source account
-     * @return This request object
      */
-    public AccountInquiryRequest setSourceAccount(String sourceAccount) {
+    public void setSourceAccount(String sourceAccount) {
         this.additionalInfo.put("sourceAccount", sourceAccount);
-        return this;
     }
 
     /**
@@ -189,12 +187,4 @@ public class AccountInquiryRequest {
             return "AccountInquiryRequest{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
         }
     }
-//    public String toString() {
-//        return "AccountInquiryRequest{" +
-//                "bankCode='" + bankCode + '\'' +
-//                ", accountNumber='" + accountNumber + '\'' +
-//                ", partnerReferenceNumber='" + partnerReferenceNumber + '\'' +
-//                ", additionalInfo=" + additionalInfo +
-//                '}';
-//    }
 }
