@@ -17,20 +17,21 @@ import java.nio.file.Files;
 public class AccountInquiryExample {
 
     public static void main(String[] args) throws IOException {
-        URL resource = AccountInquiryExample.class.getResource("/faspay.crt");
+        URL resourceSsl = AccountInquiryExample.class.getResource("/faspay.crt");
         URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());
 
+        assert resourceSsl != null;
+        String sslString = Files.readString(new File(resourceSsl.getFile()).toPath());
+
         // Replace these values with your actual credentials
         String partnerId = "99999";
-        assert resource != null;
-        String sslCertPath = resource.getPath();
 
         try {
             // Create a configuration with your credentials
-            FaspaySnapConfig config = new FaspaySnapConfig(partnerId, privateKeyStr, sslCertPath);
+            FaspaySnapConfig config = new FaspaySnapConfig(partnerId, privateKeyStr, sslString);
 
             // By default, the environment is set to "sandbox"
             // You can explicitly set the environment if needed:
