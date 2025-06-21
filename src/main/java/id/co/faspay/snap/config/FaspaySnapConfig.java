@@ -1,6 +1,6 @@
 package id.co.faspay.snap.config;
 
-import java.io.FileInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.security.KeyStore;
 import java.security.cert.CertificateException;
@@ -32,7 +32,7 @@ public class FaspaySnapConfig {
     protected String baseUrl;
     private final String partnerId;
     private final String privateKey;
-    private final String sslCertPath;
+    private final String sslCert;
     private SSLContext sslContext;
     private X509TrustManager trustManager;
 
@@ -42,12 +42,12 @@ public class FaspaySnapConfig {
      *
      * @param partnerId The partner ID for authentication
      * @param privateKey The private key for signing requests
-     * @param sslCertPath The path to the SSL certificate file
+     * @param sslCert The SSL certificate content as string
      */
-    public FaspaySnapConfig(String partnerId, String privateKey, String sslCertPath) {
+    public FaspaySnapConfig(String partnerId, String privateKey, String sslCert) {
         this.partnerId = Objects.requireNonNull(partnerId, "partnerId must not be null");
         this.privateKey = Objects.requireNonNull(privateKey, "privateKey must not be null");
-        this.sslCertPath = Objects.requireNonNull(sslCertPath, "sslCertPath must not be null");
+        this.sslCert = Objects.requireNonNull(sslCert, "sslCert must not be null");
 
         // Set default environment to sandbox
         setEnv(null);
@@ -79,8 +79,8 @@ public class FaspaySnapConfig {
     }
 
     /**
-     * Initializes the SSL context using the provided SSL certificate file path. This method:
-     * - Loads an X.509 certificate from the file specified by the sslCertPath field.
+     * Initializes the SSL context using the provided SSL certificate string. This method:
+     * - Loads an X.509 certificate from the certificate string content.
      * - Creates a key store and adds the loaded certificate to it.
      * - Configures a TrustManagerFactory with the key store.
      * - Initializes an SSLContext using the created trust managers.
@@ -97,9 +97,9 @@ public class FaspaySnapConfig {
             KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             keyStore.load(null, null);
 
-            // Load the certificate
-            try (InputStream is = new FileInputStream(sslCertPath)) {
-                System.out.println("Loading certificate from: " + is);
+            // Load the certificate from string content
+            try (InputStream is = new ByteArrayInputStream(sslCert.getBytes())) {
+                System.out.println("Loading certificate from string content");
 
                 X509Certificate cert = loadCertificate(is);
                 keyStore.setCertificateEntry("faspay-cert", cert);
@@ -190,12 +190,12 @@ public class FaspaySnapConfig {
     }
 
     /**
-     * Gets the path to the SSL certificate file.
+     * Gets the SSL certificate content.
      *
-     * @return The SSL certificate path
+     * @return The SSL certificate content as string
      */
-    public String getSslCertPath() {
-        return sslCertPath;
+    public String getSslCert() {
+        return sslCert;
     }
 
     /**
