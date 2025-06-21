@@ -13,10 +13,20 @@ import java.nio.file.Files;
 
 /**
  * Example demonstrating how to use the Faspay SendMe Snap SDK for account inquiry.
+ * 
+ * This example shows how to:
+ * 1. Load SSL certificate and private key
+ * 2. Create a configuration with your credentials
+ * 3. Create a client
+ * 4. Create and configure an account inquiry request
+ * 5. Send the request and process the response
+ * 6. Handle errors
  */
 public class AccountInquiryExample {
 
     public static void main(String[] args) throws IOException {
+        // ======== STEP 1: Load SSL certificate and private key ========
+        // These files should be in your resources directory
         URL resourceSsl = AccountInquiryExample.class.getResource("/faspay.crt");
         URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg.key");
 
@@ -26,8 +36,9 @@ public class AccountInquiryExample {
         assert resourceSsl != null;
         String sslString = Files.readString(new File(resourceSsl.getFile()).toPath());
 
-        // Replace these values with your actual credentials
-        String partnerId = "99999";
+        // ======== STEP 2: Create a configuration with your credentials ========
+        // Replace these values with your actual credentials provided by Faspay
+        String partnerId = "99999"; // Your partner ID from Faspay
 
         try {
             // Create a configuration with your credentials
@@ -38,42 +49,76 @@ public class AccountInquiryExample {
             config.setEnv("sandbox");     // For testing/development
             // config.setEnv("production");  // For production use
 
-            // Create a Faspay SendMe Snap client
+            // ======== STEP 3: Create a Faspay SendMe Snap client ========
             FaspaySnapClient client = new FaspaySnapClient(config);
 
-            // Create a request with the required format
+            // ======== STEP 4: Create and configure an account inquiry request ========
+            // Method 1: Using the constructor with required parameters
             AccountInquiryRequest request = new AccountInquiryRequest(
-                    "013",                  // beneficiaryBankCode
-                    "1197363",      // beneficiaryAccountNo
-                    "20250619161815596"  // partnerReferenceNo
+                    "013",                  // beneficiaryBankCode - Bank code (e.g., 013 for Bank Permata)
+                    "1197363",              // beneficiaryAccountNo - Account number to inquire
+                    "20250619161815596"     // partnerReferenceNo - Unique reference number for tracking
             );
 
-            // Add additional info
-            request.setSourceAccount("9920017573");
+            // Add optional parameters
+            request.setSourceAccount("9920017573"); // Source account number (if required)
 
-            // Perform an account inquiry
+            // ======== STEP 5: Send the request and process the response ========
+            System.out.println("Sending account inquiry request...");
             AccountInquiryResponse response = client.accountInquiry().inquire(request);
 
             // Process the response
             if (response.isSuccess()) {
-                System.out.println("Account inquiry successful!");
+                System.out.println("\n===== ACCOUNT INQUIRY SUCCESSFUL =====");
                 System.out.println("Response code: " + response.getResponseCode());
                 System.out.println("Response message: " + response.getResponseMessage());
-                System.out.println("Reference number: " + response.getReferenceNo());
-                System.out.println("Beneficiary account name: " + response.getAccountHolderName());
-                System.out.println("Beneficiary account number: " + response.getAccountNumber());
-                System.out.println("Beneficiary bank code: " + response.getBankCode());
-                System.out.println("Beneficiary bank name: " + response.getBankName());
+                System.out.println("\n----- Account Details -----");
+                System.out.println("Account holder name: " + response.getAccountHolderName());
+                System.out.println("Account number: " + response.getAccountNumber());
+                System.out.println("Bank code: " + response.getBankCode());
+                System.out.println("Bank name: " + response.getBankName());
                 System.out.println("Currency: " + response.getCurrency());
-                System.out.println("Additional info: " + response.getAdditionalInfo());
+                System.out.println("\n----- Reference Information -----");
+                System.out.println("Faspay reference number: " + response.getReferenceNo());
+                System.out.println("Partner reference number: " + response.getPartnerReferenceNumber());
+
+                // Print additional info if available
+                if (response.getAdditionalInfo() != null && !response.getAdditionalInfo().isEmpty()) {
+                    System.out.println("\n----- Additional Information -----");
+                    response.getAdditionalInfo().forEach((key, value) -> 
+                        System.out.println(key + ": " + value));
+                }
             } else {
-                System.out.println("Account inquiry failed!");
+                System.out.println("\n===== ACCOUNT INQUIRY FAILED =====");
                 System.out.println("Response code: " + response.getResponseCode());
                 System.out.println("Response message: " + response.getResponseMessage());
+
+                // Print additional error details if available
+                if (response.getAdditionalInfo() != null && !response.getAdditionalInfo().isEmpty()) {
+                    System.out.println("\n----- Error Details -----");
+                    response.getAdditionalInfo().forEach((key, value) -> 
+                        System.out.println(key + ": " + value));
+                }
             }
 
+            // ======== ALTERNATIVE: Using direct method parameters ========
+            System.out.println("\n\nAlternative method: Using direct parameters");
+
+            // You can also make the inquiry using direct method parameters
+            AccountInquiryResponse directResponse = client.accountInquiry().inquire(
+                "013",                  // beneficiaryBankCode
+                "1197363",              // beneficiaryAccountNo
+                "20250619161815597"     // partnerReferenceNo (should be unique for each request)
+            );
+
+            System.out.println("Direct method response code: " + directResponse.getResponseCode());
+            System.out.println("Direct method response message: " + directResponse.getResponseMessage());
+
         } catch (FaspaySnapApiException e) {
-            System.err.println("Error: " + e.getMessage());
+            // ======== STEP 6: Handle errors ========
+            System.err.println("\n===== ERROR OCCURRED =====");
+            System.err.println("Error message: " + e.getMessage());
+            System.err.println("Error cause: " + (e.getCause() != null ? e.getCause().getMessage() : "Unknown"));
             e.printStackTrace();
         }
     }
