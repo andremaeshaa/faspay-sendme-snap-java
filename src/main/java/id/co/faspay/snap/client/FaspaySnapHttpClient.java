@@ -63,11 +63,11 @@ public class FaspaySnapHttpClient {
     public <T> T post(String endpoint, String userAgent, Object requestBody, Class<T> responseType) throws FaspaySnapApiException {
         try {
             String url = config.getBaseUrl() + endpoint;
-//            String requestJson = objectMapper.writeValueAsString(requestBody);
+            String timeStamp = config.getTimestamp();
             String requestJson = requestBody.toString();
 
             String privateKey = SignatureUtil.cleanPrivateKey(config.getPrivateKey());
-            String stringToSign = SignatureUtil.createStringToSign("POST", endpoint, requestJson, config.getTimestamp());
+            String stringToSign = SignatureUtil.createStringToSign("POST", endpoint, requestJson, timeStamp);
             String signature = SignatureUtil.generateRSASignature(stringToSign, privateKey);
             
             // Build the request
@@ -77,7 +77,7 @@ public class FaspaySnapHttpClient {
                     .header("Content-Type", "application/json")
                     .header("Accept", "application/json")
                     .header("User-Agent", userAgent)
-                    .header("X-TIMESTAMP", config.getTimestamp())
+                    .header("X-TIMESTAMP", timeStamp)
                     .header("X-Signature", signature)
                     .header("X-Partner-Id", config.getPartnerId())
                     .header("X-EXTERNAL-ID", config.getExternalId())
