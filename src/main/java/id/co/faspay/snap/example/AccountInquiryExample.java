@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Objects;
 
 /**
  * Example demonstrating how to use the Faspay SendMe Snap SDK for account inquiry.
@@ -81,6 +82,9 @@ public class AccountInquiryExample {
                 System.out.println("\n----- Reference Information -----");
                 System.out.println("Faspay reference number: " + response.getReferenceNo());
                 System.out.println("Partner reference number: " + response.getPartnerReferenceNumber());
+
+                System.out.println("status: " + response.getStatus());
+                System.out.println("message: " + response.getMessage());
 
                 // Print additional info if available
                 if (response.getAdditionalInfo() != null && !response.getAdditionalInfo().isEmpty()) {
