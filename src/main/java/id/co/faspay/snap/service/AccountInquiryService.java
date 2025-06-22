@@ -68,12 +68,11 @@ public class AccountInquiryService {
         // Here we could add additional business logic before making the API call
         
         try {
-            AccountInquiryResponse response = accountInquiryClient.inquire(request);
 
             // Here we could add additional business logic after receiving the API response
             // For example, enrichment, transformation, caching, etc.
             
-            return response;
+            return accountInquiryClient.inquire(request);
         } catch (FaspaySnapApiException e) {
             logger.error("Error processing account inquiry: {}", e.getMessage());
             throw e;
