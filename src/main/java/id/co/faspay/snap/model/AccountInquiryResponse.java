@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class AccountInquiryResponse {
 
-    @JsonProperty("status")
+    @JsonProperty("additionalInfo.status")
     private String status;
 
     @JsonProperty("responseCode")
@@ -53,13 +53,23 @@ public class AccountInquiryResponse {
     }
 
     /**
-     * Gets the status of the inquiry.
+     * Gets the status from additionalInfo.
      *
-     * @return The status
+     * @return The status from additionalInfo, or null if not present
      */
     public String getStatus() {
-        return status;
+        return additionalInfo != null ? additionalInfo.get("status") : null;
     }
+
+    /**
+     * Gets the message from additionalInfo.
+     *
+     * @return The message from additionalInfo, or null if not present
+     */
+    public String getMessage() {
+        return additionalInfo != null ? additionalInfo.get("message") : null;
+    }
+
 
     /**
      * Sets the status of the inquiry.
@@ -314,7 +324,7 @@ public class AccountInquiryResponse {
      * @return True if the inquiry was successful, false otherwise
      */
     public boolean isSuccess() {
-        return "success".equalsIgnoreCase(status);
+        return Objects.equals(responseCode, "2001600");
     }
 
     @Override
