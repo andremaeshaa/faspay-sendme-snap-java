@@ -385,7 +385,7 @@ public class TransferInterbankResponse {
      * @return true if the response code indicates success, false otherwise
      */
     public boolean isSuccess() {
-        return "2001800".equals(responseCode);
+        return Objects.equals(responseCode, "2003600");
     }
 
     @Override
