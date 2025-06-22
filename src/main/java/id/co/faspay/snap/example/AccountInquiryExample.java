@@ -101,19 +101,6 @@ public class AccountInquiryExample {
                 }
             }
 
-            // ======== ALTERNATIVE: Using direct method parameters ========
-            System.out.println("\n\nAlternative method: Using direct parameters");
-
-            // You can also make the inquiry using direct method parameters
-            AccountInquiryResponse directResponse = client.accountInquiry().inquire(
-                "013",                  // beneficiaryBankCode
-                "1197363",              // beneficiaryAccountNo
-                "20250619161815597"     // partnerReferenceNo (should be unique for each request)
-            );
-
-            System.out.println("Direct method response code: " + directResponse.getResponseCode());
-            System.out.println("Direct method response message: " + directResponse.getResponseMessage());
-
         } catch (FaspaySnapApiException e) {
             // ======== STEP 6: Handle errors ========
             System.err.println("\n===== ERROR OCCURRED =====");
