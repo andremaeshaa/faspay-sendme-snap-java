@@ -67,7 +67,7 @@ public class TransferInterbankExample {
             TransferInterbankRequest request = new TransferInterbankRequest(
                     "20250609103003235",       // partnerReferenceNo - Unique reference number for tracking
                     amount,                    // amount - Amount object with value and currency
-                    "GolangTestAjoji Ajojo",   // beneficiaryAccountName - Name of the recipient
+                    "SUSANTO WANGSADJAJA",   // beneficiaryAccountName - Name of the recipient
                     "60004400184",             // beneficiaryAccountNo - Account number of the recipient
                     "008",                     // beneficiaryBankCode - Bank code (e.g., 008 for Mandiri)
                     "9920017573"               // sourceAccountNo - Your account number
@@ -137,33 +137,6 @@ public class TransferInterbankExample {
                         System.out.println(key + ": " + value));
                 }
             }
-
-            // ======== ALTERNATIVE: Using direct method parameters ========
-            System.out.println("\n\nAlternative method: Using direct parameters");
-
-            // Generate a unique reference number
-            String uniqueRef = "REF" + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
-
-            // Create a new amount object
-            Amount directAmount = new Amount("10000.00", "IDR");
-
-            // Current timestamp for transaction date
-            String transactionDate = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX"));
-
-            // You can also make the transfer using direct method parameters
-            TransferInterbankResponse directResponse = client.transferInterbank().transfer(
-                uniqueRef,                // partnerReferenceNo
-                directAmount,             // amount
-                "John Doe",               // beneficiaryAccountName
-                "1234567890",             // beneficiaryAccountNo
-                "008",                    // beneficiaryBankCode
-                "9876543210",             // sourceAccountNo
-                transactionDate           // transactionDate
-            );
-
-            System.out.println("Direct method response code: " + directResponse.getResponseCode());
-            System.out.println("Direct method response message: " + directResponse.getResponseMessage());
-
         } catch (FaspaySnapApiException e) {
             // ======== STEP 6: Handle errors ========
             System.err.println("\n===== ERROR OCCURRED =====");
