@@ -20,6 +20,10 @@ public class Constants {
         return "/account/v1.0/balance-inquiry";
     }
 
+    public String getEndpointHistoryList() {
+        return "/account/v1.0/transaction-history-list";
+    }
+
     public String getUserAgent() {
         String versionSDK = "1.0.0";
         return "FaspaySendMeSnapJava/" + versionSDK;
