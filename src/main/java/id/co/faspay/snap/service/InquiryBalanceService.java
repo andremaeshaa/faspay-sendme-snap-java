@@ -32,7 +32,7 @@ public class InquiryBalanceService {
 
             return inquiryBalanceClient.inquiryBalance(request);
         } catch (FaspaySnapApiException e) {
-            logger.error("Error processing account inquiry: {}", e.getMessage());
+            logger.error("Error processing inquiry balance: {}", e.getMessage());
             throw e;
         }
     }
