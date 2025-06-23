@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 
 /**
  * Example demonstrating how to use the Faspay SendMe Snap SDK for interbank transfers.
- * 
  * This example shows how to:
  * 1. Load SSL certificate and private key
  * 2. Create a configuration with your credentials
@@ -25,7 +24,6 @@ import java.time.format.DateTimeFormatter;
  * 4. Create and configure an interbank transfer request
  * 5. Send the request and process the response
  * 6. Handle errors
- * 
  * The interbank transfer API allows you to transfer money from your account to an account
  * at another bank. This is useful for disbursement operations.
  */
@@ -61,17 +59,22 @@ public class TransferInterbankExample {
 
             // ======== STEP 4: Create and configure an interbank transfer request ========
             // First, create an amount object with the transfer amount and currency
-            Amount amount = new Amount("59614.00", "IDR");
+            Amount amount = new Amount("50001.00", "IDR");
 
             // Method 1: Using the constructor with required parameters
             TransferInterbankRequest request = new TransferInterbankRequest(
-                    "20250609103003235",       // partnerReferenceNo - Unique reference number for tracking
+                    "20250623101414882",       // partnerReferenceNo - Unique reference number for tracking
                     amount,                    // amount - Amount object with value and currency
                     "SUSANTO WANGSADJAJA",   // beneficiaryAccountName - Name of the recipient
-                    "60004400184",             // beneficiaryAccountNo - Account number of the recipient
-                    "008",                     // beneficiaryBankCode - Bank code (e.g., 008 for Mandiri)
+                    "1197363",             // beneficiaryAccountNo - Account number of the recipient
+                    "013",                     // beneficiaryBankCode - Bank code (e.g., 008 for Mandiri)
                     "9920017573"               // sourceAccountNo - Your account number
             );
+
+            // originatorInfos parameter
+            request.setOriginatorCustomerName("PT kurang duit");
+            request.setOriginatorCustomerNo("087742290748");
+            request.setOriginatorBankCode("099");
 
             // Add optional parameters
             request.setBeneficiaryEmail("andremaesha@gmail.com"); // Email of the recipient (for notifications)
