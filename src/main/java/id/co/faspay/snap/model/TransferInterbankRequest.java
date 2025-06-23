@@ -1,5 +1,6 @@
 package id.co.faspay.snap.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -39,6 +40,10 @@ public class TransferInterbankRequest {
     @JsonProperty("transactionDate")
     private String transactionDate;
 
+    @JsonProperty("originatorInfos")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private Map<String, String> originatorInfos;
+
     @JsonProperty("additionalInfo")
     private Map<String, String> additionalInfo;
 
@@ -69,8 +74,32 @@ public class TransferInterbankRequest {
         this.beneficiaryBankCode = Objects.requireNonNull(beneficiaryBankCode, "beneficiaryBankCode must not be null");
         this.sourceAccountNumber = Objects.requireNonNull(sourceAccountNumber, "sourceAccountNumber must not be null");
         this.transactionDate = getTimestamp();
+//        this.originatorInfos = new HashMap<>();
         this.additionalInfo = new HashMap<>();
     }
+
+    /**
+     * Retrieves the originator information as a map of key-value pairs.
+     *
+     * @return A map containing the originator information, where keys represent the information types and values represent the associated data.
+     */
+    // Getter dan setter untuk originatorInfos
+    public Map<String, String> getOriginatorInfos() {
+        return originatorInfos;
+    }
+
+    /**
+     * Sets the originator information for the transfer interbank request.
+     *
+     * @param originatorInfos A map containing information about the originator. The keys and
+     *                        values in the map represent different attributes of the originator.
+     * @return This transfer interbank request object.
+     */
+    public TransferInterbankRequest setOriginatorInfos(Map<String, String> originatorInfos) {
+        this.originatorInfos = originatorInfos;
+        return this;
+    }
+
 
     /**
      * Gets the partner reference number.
@@ -310,11 +339,9 @@ public class TransferInterbankRequest {
      * Sets the callback URL in the additional info.
      *
      * @param callbackUrl The callback URL
-     * @return This request object
      */
-    public TransferInterbankRequest setCallbackUrl(String callbackUrl) {
+    public void setCallbackUrl(String callbackUrl) {
         this.additionalInfo.put("callbackUrl", callbackUrl);
-        return this;
     }
 
     /**
@@ -325,6 +352,75 @@ public class TransferInterbankRequest {
     public String getCallbackUrl() {
         return this.additionalInfo.get("callbackUrl");
     }
+
+    /**
+     * Sets the originator customer name in the originator information map.
+     *
+     * @param customerName The originator's customer name to be set
+     */
+    public void setOriginatorCustomerName(String customerName) {
+        if (this.originatorInfos == null) {
+            this.originatorInfos = new HashMap<>();
+        }
+        this.originatorInfos.put("originatorCustomerName", customerName);
+    }
+
+
+    /**
+     * Retrieves the originator customer name from the originator information map.
+     *
+     * @return The originator customer name if present, or null if the originator information is null or the key is not found.
+     */
+    public String getOriginatorCustomerName() {
+        return this.originatorInfos != null ? this.originatorInfos.get("originatorCustomerName") : null;
+    }
+
+
+    /**
+     * Sets the originator customer number in the originator information map.
+     *
+     * @param customerNo The originator customer number to set
+     */
+    public void setOriginatorCustomerNo(String customerNo) {
+        if (this.originatorInfos == null) {
+            this.originatorInfos = new HashMap<>();
+        }
+        this.originatorInfos.put("originatorCustomerNo", customerNo);
+    }
+
+
+    /**
+     * Retrieves the originator customer number from the originator information map.
+     *
+     * @return The originator customer number if present; otherwise, null
+     */
+    public String getOriginatorCustomerNo() {
+        return this.originatorInfos != null ? this.originatorInfos.get("originatorCustomerNo") : null;
+    }
+
+
+    /**
+     * Sets the originator bank code in the originator information map.
+     *
+     * @param bankCode The bank code of the originator to be set
+     */
+    public void setOriginatorBankCode(String bankCode) {
+        if (this.originatorInfos == null) {
+            this.originatorInfos = new HashMap<>();
+        }
+        this.originatorInfos.put("originatorBankCode", bankCode);
+    }
+
+
+    /**
+     * Retrieves the originator bank code from the originator information.
+     *
+     * @return The originator bank code if present; otherwise, null.
+     */
+    public String getOriginatorBankCode() {
+        return this.originatorInfos != null ? this.originatorInfos.get("originatorBankCode") : null;
+    }
+
 
     @Override
     public boolean equals(Object o) {
