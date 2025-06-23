@@ -37,6 +37,9 @@ public class TransferInterbankResponse {
     @JsonProperty("sourceAccountNo")
     private String sourceAccountNumber;
 
+    @JsonProperty("originatorInfos")
+    private Map<String, String> originatorInfos;
+
     @JsonProperty("additionalInfo")
     private Map<String, String> additionalInfo;
 
@@ -44,6 +47,7 @@ public class TransferInterbankResponse {
      * Default constructor for Jackson deserialization.
      */
     public TransferInterbankResponse() {
+        this.originatorInfos = new HashMap<>();
         this.additionalInfo = new HashMap<>();
     }
 
@@ -207,6 +211,10 @@ public class TransferInterbankResponse {
         return this;
     }
 
+    public Map<String, String> getOriginatorInfos() {
+        return originatorInfos;
+    }
+
     /**
      * Gets the additional info.
      *
@@ -214,6 +222,11 @@ public class TransferInterbankResponse {
      */
     public Map<String, String> getAdditionalInfo() {
         return additionalInfo;
+    }
+
+    public TransferInterbankResponse setOriginatorInfos(Map<String, String> originatorInfos) {
+        this.originatorInfos = originatorInfos;
+        return this;
     }
 
     /**
@@ -246,6 +259,33 @@ public class TransferInterbankResponse {
      */
     public String getBeneficiaryAccountName() {
         return this.additionalInfo.get("beneficiaryAccountName");
+    }
+
+    public TransferInterbankResponse setOriginatorCustomerName(String originatorCustomerName) {
+        this.originatorInfos.put("originatorCustomerName", originatorCustomerName);
+        return this;
+    }
+
+    public TransferInterbankResponse setOriginatorCustomerNo(String originatorCustomerNo) {
+        this.originatorInfos.put("originatorCustomerNo", originatorCustomerNo);
+        return this;
+    }
+
+    public TransferInterbankResponse setOriginatorBankCode(String originatorBankCode) {
+        this.originatorInfos.put("originatorBankCode", originatorBankCode);
+        return this;
+    }
+
+    public String getOriginatorCustomerName() {
+        return this.originatorInfos.get("originatorCustomerName");
+    }
+
+    public String getOriginatorCustomerNo() {
+        return this.originatorInfos.get("originatorCustomerNo");
+    }
+
+    public String getOriginatorBankCode() {
+        return this.originatorInfos.get("originatorBankCode");
     }
 
     /**
@@ -401,13 +441,14 @@ public class TransferInterbankResponse {
                 Objects.equals(beneficiaryAccountNumber, that.beneficiaryAccountNumber) &&
                 Objects.equals(beneficiaryBankCode, that.beneficiaryBankCode) &&
                 Objects.equals(sourceAccountNumber, that.sourceAccountNumber) &&
+                Objects.equals(originatorInfos, that.originatorInfos) &&
                 Objects.equals(additionalInfo, that.additionalInfo);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(responseCode, responseMessage, referenceNumber, partnerReferenceNumber,
-                amount, beneficiaryAccountNumber, beneficiaryBankCode, sourceAccountNumber, additionalInfo);
+                amount, beneficiaryAccountNumber, beneficiaryBankCode, sourceAccountNumber, originatorInfos, additionalInfo);
     }
 
     @Override
