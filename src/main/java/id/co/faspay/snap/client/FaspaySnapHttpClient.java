@@ -109,7 +109,7 @@ public class FaspaySnapHttpClient {
     private <T> T handleResponse(Response response, Class<T> responseType) throws IOException, FaspaySnapApiException {
         String responseBody = response.body() != null ? response.body().string() : "";
         
-        logger.debug("Received response with status code {}: {}", response.code(), responseBody);
+        logger.debug("Received response with: {}", responseBody);
         
         if (!response.isSuccessful()) {
             throw new FaspaySnapApiException("API request failed with status code " + response.code() + ": " + responseBody);
