@@ -32,6 +32,14 @@ public class Constants {
         return "/account/v1.0/emoney/topup-status";
     }
 
+    public String getEndpointBillPayment() {
+        return "/account/v1.0/transfer-va/payment-intrabank";
+    }
+
+    public String getEndpointBillInquiry() {
+        return "/account/v1.0/transfer-va/inquiry-intrabank";
+    }
+
     public String getUserAgent() {
         String versionSDK = "1.0.0";
         return "FaspaySendMeSnapJava/" + versionSDK;
