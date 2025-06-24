@@ -14,6 +14,7 @@ public class FaspaySnapClient {
     private final TransferStatusService transferStatusService;
     private final InquiryBalanceService inquiryBalanceService;
     private final HistoryListService historyListService;
+    private final CustomerTopupService customerTopupService;
 
     /**
      * Creates a new Faspay SendMe Snap API client with the provided configuration.
@@ -27,6 +28,7 @@ public class FaspaySnapClient {
         this.transferStatusService = new TransferStatusService(config);
         this.inquiryBalanceService = new InquiryBalanceService(config);
         this.historyListService = new HistoryListService(config);
+        this.customerTopupService = new CustomerTopupService(config);
     }
 
     /**
@@ -57,6 +59,10 @@ public class FaspaySnapClient {
 
     public HistoryListService historyList() {
         return historyListService;
+    }
+
+    public CustomerTopupService customerTopup() {
+        return customerTopupService;
     }
 
     /**
