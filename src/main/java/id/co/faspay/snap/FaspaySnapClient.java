@@ -16,6 +16,7 @@ public class FaspaySnapClient {
     private final HistoryListService historyListService;
     private final CustomerTopupService customerTopupService;
     private final CustomerTopupStatusService customerTopupStatusService;
+    private final BillPaymentService billPaymentService;
 
     /**
      * Creates a new Faspay SendMe Snap API client with the provided configuration.
@@ -31,6 +32,7 @@ public class FaspaySnapClient {
         this.historyListService = new HistoryListService(config);
         this.customerTopupService = new CustomerTopupService(config);
         this.customerTopupStatusService = new CustomerTopupStatusService(config);
+        this.billPaymentService = new BillPaymentService(config);
     }
 
     /**
@@ -69,6 +71,10 @@ public class FaspaySnapClient {
 
     public CustomerTopupStatusService customerTopupStatus() {
         return customerTopupStatusService;
+    }
+
+    public BillPaymentService billPayment() {
+        return billPaymentService;
     }
 
     /**
