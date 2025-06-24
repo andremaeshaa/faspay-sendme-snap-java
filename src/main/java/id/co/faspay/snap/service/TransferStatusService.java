@@ -1,6 +1,5 @@
 package id.co.faspay.snap.service;
 
-import id.co.faspay.snap.client.AccountInquiryClient;
 import id.co.faspay.snap.client.TransferStatusClient;
 import id.co.faspay.snap.config.FaspaySnapConfig;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
@@ -32,7 +31,7 @@ public class TransferStatusService {
 
             return transferStatusClient.status(request);
         } catch (FaspaySnapApiException e) {
-            logger.error("Error processing account inquiry: {}", e.getMessage());
+            logger.error("Error processing transfer status inquiry: {}", e.getMessage());
             throw e;
         }
     }
