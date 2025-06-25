@@ -1,6 +1,7 @@
 plugins {
     id("java")
     id("maven-publish")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "id.co.faspay"
@@ -11,6 +12,12 @@ java {
     targetCompatibility = JavaVersion.VERSION_11
     withJavadocJar()
     withSourcesJar()
+
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+        // Remove vendor specification to use any available Java 11
+    }
+
 }
 
 repositories {
@@ -47,10 +54,22 @@ tasks.test {
     useJUnitPlatform()
 }
 
+tasks.shadowJar {
+    archiveBaseName.set("faspay-sendme-snap-java")
+    archiveClassifier.set("")
+    archiveVersion.set("1.0.0")
+    mergeServiceFiles()
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            from(components["java"])
+            project.shadow.component(this)
+
+            // Pastikan artifactId dan groupId benar
+            artifactId = "faspay-sendme-snap-java"
+            groupId = "id.co.faspay"
+            version = "1.0.0"
 
             pom {
                 name.set("Faspay SendMe Snap Java SDK")
@@ -63,7 +82,28 @@ publishing {
                         url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
                     }
                 }
+
+                developers {
+                    developer {
+                        id.set("faspay")
+                        name.set("Faspay")
+                        email.set("andremaesha@gmail.com")
+                    }
+                }
+
+                scm {
+                    connection.set("scm:git:git://github.com/andremaeshaa/faspay-sendme-snap-java.git")
+                    developerConnection.set("scm:git:ssh://github.com/andremaeshaa/faspay-sendme-snap-java.git")
+                    url.set("https://github.com/andremaeshaa/faspay-sendme-snap-java")
+                }
             }
+        }
+    }
+
+    repositories {
+        maven {
+            name = "local"
+            url = uri("$buildDir/repo")
         }
     }
 }
