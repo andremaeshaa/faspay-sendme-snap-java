@@ -1,11 +1,47 @@
 # Faspay SendMe Snap Java SDK
 
-A Java SDK for integrating with the Faspay SendMe Snap API. This SDK provides a simple and convenient way to interact with the Faspay SendMe Snap API for disbursement operations.
+A Java SDK for integrating with the Faspay SendMe Snap API. This SDK provides a simple and convenient way to interact with the Faspay SendMe Snap API for disbursement operations, bill payments, account inquiries, and more.
+
+## Table of Contents
+
+- [Features](#features)
+- [Requirements](#requirements)
+- [Installation](#installation)
+  - [Gradle](#gradle)
+  - [Maven](#maven)
+  - [Direct JAR Usage](#direct-jar-usage)
+- [Quick Start](#quick-start)
+- [Configuration](#configuration)
+- [Available Services](#available-services)
+  - [Account Inquiry](#account-inquiry)
+  - [Interbank Transfer](#interbank-transfer)
+  - [Bill Inquiry](#bill-inquiry)
+  - [Bill Payment](#bill-payment)
+  - [Customer Topup](#customer-topup)
+  - [Customer Topup Status](#customer-topup-status)
+  - [History List](#history-list)
+  - [Inquiry Balance](#inquiry-balance)
+  - [Transfer Status](#transfer-status)
+- [Error Handling](#error-handling)
+- [SSL Certificate](#ssl-certificate)
+- [Complete Examples](#complete-examples)
+- [Project Structure](#project-structure)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
 
 ## Features
 
-- Account Inquiry API support
-- Interbank Transfer API support
+- Complete API support for all Faspay SendMe Snap services:
+  - Account Inquiry
+  - Interbank Transfer
+  - Bill Inquiry
+  - Bill Payment
+  - Customer Topup
+  - Customer Topup Status
+  - History List
+  - Inquiry Balance
+  - Transfer Status
 - Secure communication with SSL certificate
 - Request signing with HMAC-SHA256
 - Comprehensive error handling
@@ -56,7 +92,61 @@ If you prefer to use the JAR file directly without a build system:
 
 3. Import and use the SDK classes in your code as shown in the examples below
 
-## Getting Started
+## Quick Start
+
+Here's a complete example to get you started with the Faspay SendMe Snap Java SDK:
+
+```java
+import id.co.faspay.snap.FaspaySnapClient;
+import id.co.faspay.snap.config.FaspaySnapConfig;
+import id.co.faspay.snap.model.AccountInquiryResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+import java.io.File;
+import java.nio.file.Files;
+
+public class QuickStartExample {
+    public static void main(String[] args) throws Exception {
+        // Load your SSL certificate and private key
+        String privateKeyStr = Files.readString(new File("path/to/your/private.key").toPath());
+        String sslString = Files.readString(new File("path/to/your/certificate.pem").toPath());
+
+        // Create a configuration with your credentials
+        FaspaySnapConfig config = new FaspaySnapConfig(
+            "your-partner-id",     // Partner ID provided by Faspay
+            privateKeyStr,         // Private key for signing requests
+            sslString              // SSL certificate for secure communication
+        );
+        config.setEnv("sandbox");  // For testing/development
+
+        // Create a client with your configuration
+        FaspaySnapClient client = new FaspaySnapClient(config);
+
+        // Perform an account inquiry
+        try {
+            AccountInquiryResponse response = client.accountInquiry().inquire(
+                "014",                  // Bank code (e.g., 014 for BCA)
+                "1234567890",           // Account number to inquire
+                "REF-" + System.currentTimeMillis()  // Unique partner reference number
+            );
+
+            // Process the response
+            if (response.isSuccess()) {
+                System.out.println("Account inquiry successful!");
+                System.out.println("Account holder name: " + response.getAccountHolderName());
+                System.out.println("Bank name: " + response.getBankName());
+            } else {
+                System.out.println("Account inquiry failed!");
+                System.out.println("Response code: " + response.getResponseCode());
+                System.out.println("Response message: " + response.getResponseMessage());
+            }
+        } catch (FaspaySnapApiException e) {
+            System.err.println("Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+}
+```
 
 ### Configuration
 
@@ -449,6 +539,306 @@ try {
 }
 ```
 
+## Customer Topup
+
+The Customer Topup API allows you to top up a customer's account (e.g., for mobile credit or similar services).
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.Amount;
+import id.co.faspay.snap.model.CustomerTopupRequest;
+import id.co.faspay.snap.model.CustomerTopupResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create amount object
+    Amount amount = new Amount();
+    amount.setCurrency("IDR");
+    amount.setValue("90107.00");
+
+    // Create additional info
+    CustomerTopupRequest.AdditionalInfo additionalInfo = new CustomerTopupRequest.AdditionalInfo();
+    additionalInfo.setSourceAccount("9920017573");
+    additionalInfo.setPlatformCode("gpy");
+    additionalInfo.setBeneficiaryEmail("customer@example.com");
+    additionalInfo.setTransactionDescription("Monthly Mobile Credit");
+    additionalInfo.setCallbackUrl("https://your-domain.com/callback");
+
+    // Create request object
+    CustomerTopupRequest request = new CustomerTopupRequest();
+    request.setPartnerReferenceNo("REF-" + System.currentTimeMillis());
+    request.setCustomerNumber("0812254830");  // Customer's phone number
+    request.setAmount(amount);
+    request.setTransactionDate(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")));
+    request.setAdditionalInfo(additionalInfo);
+
+    // Perform the topup
+    CustomerTopupResponse response = client.customerTopup().topup(request);
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Customer topup successful!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+        System.out.println("Transaction status: " + response.getAdditionalInfo().getLatestTransactionStatus());
+    } else {
+        System.out.println("Customer topup failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `CustomerTopupResponse` object contains information about the topup transaction:
+
+```java
+if (response.isSuccess()) {
+    // Basic information
+    String responseCode = response.getResponseCode();
+    String responseMessage = response.getResponseMessage();
+
+    // Transaction status
+    String transactionStatus = response.getAdditionalInfo().getLatestTransactionStatus();
+
+    // Additional information
+    Map<String, String> additionalInfo = response.getAdditionalInfo().getAdditionalInfo();
+}
+```
+
+## Customer Topup Status
+
+The Customer Topup Status API allows you to check the status of a previous customer topup transaction.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.CustomerTopupStatusRequest;
+import id.co.faspay.snap.model.CustomerTopupStatusResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create request object with partner reference number and transaction identifiers
+    CustomerTopupStatusRequest request = new CustomerTopupStatusRequest(
+        "REF-12345678",  // Partner reference number used in the original topup request
+        "150207",        // Transaction ID
+        "38"             // Additional identifier
+    );
+
+    // Check the status
+    CustomerTopupStatusResponse response = client.customerTopupStatus().status(request);
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Status check successful!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Latest transaction status: " + response.getLatestTransactionStatus());
+    } else {
+        System.out.println("Status check failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `CustomerTopupStatusResponse` object contains information about the status of the topup transaction:
+
+```java
+if (response.isSuccess()) {
+    // Status information
+    String responseCode = response.getResponseCode();
+    String responseMessage = response.getResponseMessage();
+    String transactionStatus = response.getLatestTransactionStatus();
+
+    // Additional information if available
+    Map<String, String> additionalInfo = response.getAdditionalInfo();
+}
+```
+
+## History List
+
+The History List API allows you to retrieve a list of transaction history within a specified time range for a specific account.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.HistoryListRequest;
+import id.co.faspay.snap.model.HistoryListResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create request object with time range and account number
+    HistoryListRequest request = new HistoryListRequest(
+        "2023-06-23T08:00:00+07:00",  // Start date/time in ISO 8601 format
+        "2023-06-23T18:00:00+07:00",  // End date/time in ISO 8601 format
+        "9920017573"                  // Account number
+    );
+
+    // Retrieve the history list
+    HistoryListResponse response = client.historyList().list(request);
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("History list retrieved successfully!");
+        System.out.println("Response message: " + response.getResponseMessage());
+        System.out.println("Detail data: " + response.getDetailData());
+        System.out.println("Account number: " + response.getAdditionalInfo().getAccountNo());
+
+        // Process transaction history data if available
+        // The structure depends on the API response format
+    } else {
+        System.out.println("History list retrieval failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `HistoryListResponse` object contains the transaction history data:
+
+```java
+if (response.isSuccess()) {
+    // Basic information
+    String responseMessage = response.getResponseMessage();
+    Object detailData = response.getDetailData();  // This might be a list or map of transactions
+
+    // Account information
+    String accountNo = response.getAdditionalInfo().getAccountNo();
+
+    // Additional information
+    Map<String, String> additionalInfo = response.getAdditionalInfo().getAdditionalInfo();
+
+    // Process the detail data according to its structure
+    // This might involve iterating through a list of transactions
+}
+```
+
+## Inquiry Balance
+
+The Inquiry Balance API allows you to check the balance of a specific account.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.InquiryBalanceRequest;
+import id.co.faspay.snap.model.InquiryBalanceResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create request object with account number
+    InquiryBalanceRequest request = new InquiryBalanceRequest("9920017573");
+
+    // Check the balance
+    InquiryBalanceResponse response = client.inquiryBalance().balance(request);
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Balance inquiry successful!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+        System.out.println("Account balance: " + response.getBalance());
+        System.out.println("Currency: " + response.getCurrency());
+    } else {
+        System.out.println("Balance inquiry failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `InquiryBalanceResponse` object contains the account balance information:
+
+```java
+if (response.isSuccess()) {
+    // Basic information
+    String responseCode = response.getResponseCode();
+    String responseMessage = response.getResponseMessage();
+
+    // Balance information
+    String balance = response.getBalance();
+    String currency = response.getCurrency();
+
+    // Additional information if available
+    Map<String, String> additionalInfo = response.getAdditionalInfo();
+}
+```
+
+## Transfer Status
+
+The Transfer Status API allows you to check the status of a previous transfer transaction.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.StatusTransferRequest;
+import id.co.faspay.snap.model.StatusTransferResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create request object with partner reference number and transaction identifiers
+    StatusTransferRequest request = new StatusTransferRequest(
+        "REF-12345678",  // Partner reference number used in the original transfer request
+        "150120",        // Transaction ID
+        "18"             // Additional identifier
+    );
+
+    // Check the status
+    StatusTransferResponse response = client.transferStatus().status(request);
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Status check successful!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Latest transaction status: " + response.getLatestTransactionStatus());
+        System.out.println("Callback URL: " + response.getCallbackUrl());
+    } else {
+        System.out.println("Status check failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `StatusTransferResponse` object contains information about the status of the transfer transaction:
+
+```java
+if (response.isSuccess()) {
+    // Status information
+    String responseCode = response.getResponseCode();
+    String responseMessage = response.getResponseMessage();
+    String transactionStatus = response.getLatestTransactionStatus();
+    String callbackUrl = response.getCallbackUrl();
+
+    // Additional information if available
+    Map<String, String> additionalInfo = response.getAdditionalInfo();
+}
+```
+
 ## Complete Examples
 
 For complete examples, see the example classes in the SDK:
@@ -462,6 +852,47 @@ For complete examples, see the example classes in the SDK:
 - `HistoryListExample.java` - Example for retrieving transaction history
 - `InquiryBalanceExample.java` - Example for checking account balance
 - `TransferStatusExample.java` - Example for checking transfer status
+
+## Project Structure
+
+The SDK is organized into the following packages:
+
+- `id.co.faspay.snap` - Main package containing the `FaspaySnapClient` class
+- `id.co.faspay.snap.client` - HTTP clients for each service
+- `id.co.faspay.snap.config` - Configuration classes
+- `id.co.faspay.snap.exception` - Exception classes
+- `id.co.faspay.snap.model` - Request and response models
+- `id.co.faspay.snap.service` - Service interfaces and implementations
+- `id.co.faspay.snap.util` - Utility classes
+- `id.co.faspay.snap.example` - Example code for each service
+
+## Contributing
+
+Contributions to the SDK are welcome! If you find a bug or have a feature request, please open an issue on the GitHub repository. If you want to contribute code, please fork the repository and submit a pull request.
+
+### Development Setup
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/faspay/faspay-sendme-snap-java.git
+   ```
+
+2. Build the project:
+   ```
+   cd faspay-sendme-snap-java
+   ./gradlew build
+   ```
+
+3. Run the tests:
+   ```
+   ./gradlew test
+   ```
+
+### Coding Standards
+
+- Follow the Java coding conventions
+- Write unit tests for new features
+- Update documentation for changes
 
 ## License
 
