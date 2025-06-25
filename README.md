@@ -39,6 +39,23 @@ Add the following dependency to your `pom.xml` file:
 </dependency>
 ```
 
+### Direct JAR Usage
+
+If you prefer to use the JAR file directly without a build system:
+
+1. Download or build the JAR file:
+   - Build it yourself using `.\gradlew shadowJar` command
+   - The JAR file will be created at `build\libs\faspay-sendme-snap-java-1.0.0.jar`
+
+2. Add the JAR to your project's classpath:
+   - For a simple Java application, use the `-cp` option when running:
+     ```
+     java -cp path\to\faspay-sendme-snap-java-1.0.0.jar;. YourMainClass
+     ```
+   - For an IDE like Eclipse or IntelliJ IDEA, add the JAR file to your project's libraries
+
+3. Import and use the SDK classes in your code as shown in the examples below
+
 ## Getting Started
 
 ### Configuration
@@ -306,16 +323,166 @@ URL resourceSsl = YourClass.class.getResource("/faspay.crt");
 String sslCertificate = Files.readString(new File(resourceSsl.getFile()).toPath());
 ```
 
+## Bill Inquiry
+
+The Bill Inquiry API allows you to check details of a virtual account bill before making a payment.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.BillInquiryRequest;
+import id.co.faspay.snap.model.BillInquiryResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create additional info
+    BillInquiryRequest.AdditionalInfo additionalInfo = new BillInquiryRequest.AdditionalInfo();
+    additionalInfo.setBillerCode("013");
+    additionalInfo.setSourceAccount("9920017573");
+
+    // Perform a bill inquiry with direct parameters
+    BillInquiryResponse response = client.billInquiry().inquiry(
+        new BillInquiryRequest(
+            "REF-" + System.currentTimeMillis(),  // Unique partner reference number
+            "7008",                               // Partner service ID
+            "08000047816",                        // Customer number
+            "700808000047816",                    // Virtual account number
+            additionalInfo                        // Additional info
+        )
+    );
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Bill inquiry successful!");
+
+        // Get virtual account data
+        BillInquiryResponse.VirtualAccountData vaData = response.getVirtualAccountData();
+        System.out.println("Virtual Account Name: " + vaData.getVirtualAccountName());
+        System.out.println("Total Amount: " + vaData.getTotalAmount().getValue() + " " + 
+                                             vaData.getTotalAmount().getCurrency());
+        System.out.println("Partner Reference Number: " + vaData.getPartnerReferenceNo());
+    } else {
+        System.out.println("Bill inquiry failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
+### Response Handling
+
+The `BillInquiryResponse` object contains detailed information about the virtual account:
+
+```java
+if (response.isSuccess()) {
+    // Basic information
+    String responseCode = response.getResponseCode();
+    String responseMessage = response.getResponseMessage();
+
+    // Virtual account data
+    BillInquiryResponse.VirtualAccountData vaData = response.getVirtualAccountData();
+    String partnerServiceId = vaData.getPartnerServiceId();
+    String customerNo = vaData.getCustomerNo();
+    String virtualAccountNo = vaData.getVirtualAccountNo();
+    String virtualAccountName = vaData.getVirtualAccountName();
+    String virtualAccountTrxType = vaData.getVirtualAccountTrxType();
+    String partnerReferenceNo = vaData.getPartnerReferenceNo();
+
+    // Amount information
+    Amount totalAmount = vaData.getTotalAmount();
+    String value = totalAmount.getValue();
+    String currency = totalAmount.getCurrency();
+
+    // Additional information
+    Map<String, String> additionalInfo = response.getAdditionalInfo();
+}
+```
+
+## Bill Payment
+
+The Bill Payment API allows you to pay a virtual account bill after performing a bill inquiry.
+
+### Basic Usage
+
+```java
+import id.co.faspay.snap.model.BillPaymentRequest;
+import id.co.faspay.snap.model.BillPaymentResponse;
+import id.co.faspay.snap.exception.FaspaySnapApiException;
+
+try {
+    // Create additional info
+    BillPaymentRequest.AdditionalInfo additionalInfo = new BillPaymentRequest.AdditionalInfo();
+    additionalInfo.setBillerCode("013");
+    additionalInfo.setSourceAccount("9920017573");
+
+    // Create amount
+    Amount amount = new Amount("100000.00", "IDR");
+
+    // Perform a bill payment
+    BillPaymentResponse response = client.billPayment().pay(
+        new BillPaymentRequest(
+            "REF-" + System.currentTimeMillis(),  // Unique partner reference number
+            "7008",                               // Partner service ID
+            "08000047816",                        // Customer number
+            "700808000047816",                    // Virtual account number
+            amount,                               // Amount to pay
+            additionalInfo                        // Additional info
+        )
+    );
+
+    // Process the response
+    if (response.isSuccess()) {
+        System.out.println("Bill payment successful!");
+        System.out.println("Transaction ID: " + response.getTransactionId());
+        System.out.println("Reference Number: " + response.getReferenceNo());
+    } else {
+        System.out.println("Bill payment failed!");
+        System.out.println("Response code: " + response.getResponseCode());
+        System.out.println("Response message: " + response.getResponseMessage());
+    }
+} catch (FaspaySnapApiException e) {
+    System.err.println("Error: " + e.getMessage());
+    e.printStackTrace();
+}
+```
+
 ## Complete Examples
 
 For complete examples, see the example classes in the SDK:
 
 - `AccountInquiryExample.java` - Example for account inquiry
 - `TransferInterbankExample.java` - Example for interbank transfer
+- `BillInquiryExample.java` - Example for bill inquiry
+- `BillPaymentExample.java` - Example for bill payment
+- `CustomerTopupExample.java` - Example for customer topup
+- `CustomerTopupStatusExample.java` - Example for checking customer topup status
+- `HistoryListExample.java` - Example for retrieving transaction history
+- `InquiryBalanceExample.java` - Example for checking account balance
+- `TransferStatusExample.java` - Example for checking transfer status
 
 ## License
 
 This SDK is licensed under the Apache License 2.0. See the [LICENSE](LICENSE) file for details.
+
+## Using the JAR File Directly
+
+If you prefer to use the JAR file directly without a build system:
+
+1. Download or build the JAR file:
+   - Build it yourself using `.\gradlew shadowJar` command
+   - The JAR file will be created at `build\libs\faspay-sendme-snap-java-1.0.0.jar`
+
+2. Add the JAR to your project's classpath:
+   - For a simple Java application, use the `-cp` option when running:
+     ```
+     java -cp path\to\faspay-sendme-snap-java-1.0.0.jar;. YourMainClass
+     ```
+   - For an IDE like Eclipse or IntelliJ IDEA, add the JAR file to your project's libraries
+
+3. Import and use the SDK classes in your code as shown in the examples above
 
 ## Support
 
