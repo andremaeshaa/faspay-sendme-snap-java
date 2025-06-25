@@ -29,7 +29,7 @@ public class BillInquiryService {
             // Here we could add additional business logic after receiving the API response
             // For example, enrichment, transformation, caching, etc.
 
-            return billInquiryClient.BillInquiry(request);
+            return billInquiryClient.billInquiry(request);
         } catch (FaspaySnapApiException e) {
             logger.error("Error processing transfer status inquiry: {}", e.getMessage());
             throw e;
