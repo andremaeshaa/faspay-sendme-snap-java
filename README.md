@@ -99,24 +99,33 @@ Here's a complete example to get you started with the Faspay SendMe Snap Java SD
 ```java
 import id.co.faspay.snap.FaspaySnapClient;
 import id.co.faspay.snap.config.FaspaySnapConfig;
+import id.co.faspay.snap.model.AccountInquiryRequest;
 import id.co.faspay.snap.model.AccountInquiryResponse;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import java.nio.file.Files;
 
 public class QuickStartExample {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         // Load your SSL certificate and private key
-        String privateKeyStr = Files.readString(new File("path/to/your/private.key").toPath());
-        String sslString = Files.readString(new File("path/to/your/certificate.pem").toPath());
+        // These files should be in your resources directory
+        URL resourceSsl = QuickStartExample.class.getResource("/faspay.crt");
+        URL privateKeyResource = QuickStartExample.class.getResource("/enc_stg.key");
+
+        assert privateKeyResource != null;
+        String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());
+
+        assert resourceSsl != null;
+        String sslString = Files.readString(new File(resourceSsl.getFile()).toPath());
 
         // Create a configuration with your credentials
-        FaspaySnapConfig config = new FaspaySnapConfig(
-            "your-partner-id",     // Partner ID provided by Faspay
-            privateKeyStr,         // Private key for signing requests
-            sslString              // SSL certificate for secure communication
-        );
+        // Replace this value with your actual partner ID provided by Faspay
+        String partnerId = "99999";
+
+        FaspaySnapConfig config = new FaspaySnapConfig(partnerId, privateKeyStr, sslString);
         config.setEnv("sandbox");  // For testing/development
 
         // Create a client with your configuration
@@ -124,11 +133,18 @@ public class QuickStartExample {
 
         // Perform an account inquiry
         try {
-            AccountInquiryResponse response = client.accountInquiry().inquire(
-                "014",                  // Bank code (e.g., 014 for BCA)
-                "1234567890",           // Account number to inquire
-                "REF-" + System.currentTimeMillis()  // Unique partner reference number
+            // Create and configure an account inquiry request
+            AccountInquiryRequest request = new AccountInquiryRequest(
+                "013",                  // beneficiaryBankCode - Bank code (e.g., 013 for Bank Permata)
+                "1197363",              // beneficiaryAccountNo - Account number to inquire
+                "REF-" + System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
             );
+
+            // Add optional parameters
+            request.setSourceAccount("9920017573"); // Source account number (if required)
+
+            // Send the request
+            AccountInquiryResponse response = client.accountInquiry().inquire(request);
 
             // Process the response
             if (response.isSuccess()) {
@@ -191,16 +207,23 @@ The Account Inquiry API allows you to verify bank account details before making 
 ### Basic Usage
 
 ```java
+import id.co.faspay.snap.model.AccountInquiryRequest;
 import id.co.faspay.snap.model.AccountInquiryResponse;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
 
 try {
-    // Perform an account inquiry with direct parameters
-    AccountInquiryResponse response = client.accountInquiry().inquire(
-        "014",                  // Bank code (e.g., 014 for BCA)
-        "1234567890",           // Account number to inquire
-        "REF-" + System.currentTimeMillis()  // Unique partner reference number
+    // Create and configure an account inquiry request
+    AccountInquiryRequest request = new AccountInquiryRequest(
+        "013",                  // beneficiaryBankCode - Bank code (e.g., 013 for Bank Permata)
+        "1197363",              // beneficiaryAccountNo - Account number to inquire
+        "REF-" + System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
     );
+
+    // Add optional parameters
+    request.setSourceAccount("9920017573"); // Source account number (if required)
+
+    // Send the request
+    AccountInquiryResponse response = client.accountInquiry().inquire(request);
 
     // Process the response
     if (response.isSuccess()) {
