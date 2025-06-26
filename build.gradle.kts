@@ -1,25 +1,12 @@
 plugins {
     id("java")
     id("maven-publish")
-    id("signing")
-    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "id.co.faspay"
 version = "1.0.0"
 
-// Configure Nexus publishing
-nexusPublishing {
-    repositories {
-        sonatype {
-            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
-            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
-            username.set(findProperty("sonatype.username") as String? ?: "")
-            password.set(findProperty("sonatype.password") as String? ?: "")
-        }
-    }
-}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -71,6 +58,8 @@ tasks.jar {
             "Main-Class" to "id.co.faspay.Main"
         )
     }
+    // Disable the regular jar task as we'll use shadowJar instead
+    enabled = false
 }
 
 tasks.shadowJar {
@@ -78,49 +67,21 @@ tasks.shadowJar {
     archiveClassifier.set("")
     archiveVersion.set("1.0.0")
     mergeServiceFiles()
+
+    // Make shadowJar the default jar
+    enabled = true
 }
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-//            project.shadow.component(this)
-            from(components["java"])
+            // Use shadow jar as the primary artifact
+            artifact(tasks.shadowJar.get())
 
-            // Pastikan artifactId dan groupId benar
+            // Set artifact details
             artifactId = "faspay-sendme-snap-java"
             groupId = "id.co.faspay"
             version = "1.0.0"
-
-            artifact(tasks.shadowJar.get()) {
-                classifier = "all" // ini hanya tambahan, bukan artefak utama
-            }
-
-            pom {
-                name.set("Faspay SendMe Snap Java SDK")
-                description.set("Java SDK for Faspay SendMe Snap API")
-                url.set("https://github.com/faspay/faspay-sendme-snap-java")
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("http://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-
-                developers {
-                    developer {
-                        id.set("faspay")
-                        name.set("Faspay")
-                        email.set("andremaesha@gmail.com")
-                    }
-                }
-
-                scm {
-                    connection.set("scm:git:git://github.com/andremaeshaa/faspay-sendme-snap-java.git")
-                    developerConnection.set("scm:git:ssh://github.com/andremaeshaa/faspay-sendme-snap-java.git")
-                    url.set("https://github.com/andremaeshaa/faspay-sendme-snap-java")
-                }
-            }
         }
     }
 
@@ -130,20 +91,4 @@ publishing {
             url = uri("$buildDir/repo")
         }
     }
-}
-
-// Configure signing
-signing {
-    val signingKeyId: String? = findProperty("signing.keyId") as String?
-    val signingPassword: String? = findProperty("signing.password") as String?
-    val signingSecretKeyRingFile: String? = findProperty("signing.secretKeyRingFile") as String?
-
-    if (signingSecretKeyRingFile != null && file(signingSecretKeyRingFile).exists()) {
-        useInMemoryPgpKeys(signingKeyId, signingPassword, file(signingSecretKeyRingFile).readText())
-    } else {
-        // Use gpg command line tool
-        useGpgCmd()
-    }
-
-    sign(publishing.publications["maven"])
 }
