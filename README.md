@@ -137,7 +137,7 @@ public class QuickStartExample {
             AccountInquiryRequest request = new AccountInquiryRequest(
                 "013",                  // beneficiaryBankCode - Bank code (e.g., 013 for Bank Permata)
                 "1197363",              // beneficiaryAccountNo - Account number to inquire
-                "REF-" + System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
+                System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
             );
 
             // Add optional parameters
@@ -216,7 +216,7 @@ try {
     AccountInquiryRequest request = new AccountInquiryRequest(
         "013",                  // beneficiaryBankCode - Bank code (e.g., 013 for Bank Permata)
         "1197363",              // beneficiaryAccountNo - Account number to inquire
-        "REF-" + System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
+        System.currentTimeMillis()  // partnerReferenceNo - Unique reference number for tracking
     );
 
     // Add optional parameters
@@ -253,7 +253,7 @@ import id.co.faspay.snap.model.AccountInquiryRequest;
 AccountInquiryRequest request = new AccountInquiryRequest(
     "014",                  // Bank code (e.g., 014 for BCA)
     "1234567890",           // Account number to inquire
-    "REF-" + System.currentTimeMillis()  // Unique partner reference number
+    System.currentTimeMillis()  // Unique partner reference number
 );
 
 // Add optional parameters
@@ -297,36 +297,36 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 try {
-    // Create an amount object
-    Amount amount = new Amount("100000.00", "IDR");
+        // First, create an amount object with the transfer amount and currency
+        Amount amount = new Amount("50001.00", "IDR");
+        // Method 1: Using the constructor with required parameters
+        TransferInterbankRequest request = new TransferInterbankRequest(
+                "20250623101414882",       // partnerReferenceNo - Unique reference number for tracking
+                amount,                    // amount - Amount object with value and currency
+                "SUSANTO WANGSADJAJA",   // beneficiaryAccountName - Name of the recipient
+                "1197363",             // beneficiaryAccountNo - Account number of the recipient
+                "013",                     // beneficiaryBankCode - Bank code (e.g., 008 for Mandiri)
+                "9920017573"               // sourceAccountNo - Your account number
+        );
 
-    // Generate a unique reference number
-    String uniqueRef = "REF" + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        // originatorInfos parameter
+            request.setOriginatorCustomerName("PT kurang duit");
+            request.setOriginatorCustomerNo("087742290748");
+            request.setOriginatorBankCode("099");
 
-    // Current timestamp for transaction date
-    String transactionDate = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX"));
+        // Add optional parameters
+            request.setBeneficiaryEmail("andremaesha@gmail.com"); // Email of the recipient (for notifications)
+            request.setTransactionDescription("snapmandiri20250609103003"); // Description of the transaction
+            request.setCallbackUrl("http://account-service/account/api/mail/sendtotele"); // URL for callback notifications
 
-    // Perform an interbank transfer with direct parameters
-    TransferInterbankResponse response = client.transferInterbank().transfer(
-        uniqueRef,              // Unique partner reference number
-        amount,                 // Amount object with value and currency
-        "John Doe",             // Beneficiary account name
-        "1234567890",           // Beneficiary account number
-        "008",                  // Beneficiary bank code (e.g., 008 for Mandiri)
-        "9876543210",           // Source account number
-        transactionDate         // Transaction date
-    );
-
-    // Process the response
-    if (response.isSuccess()) {
-        System.out.println("Interbank transfer successful!");
-        System.out.println("Reference number: " + response.getReferenceNumber());
-        System.out.println("Transaction status: " + response.getLatestTransactionStatus());
-    } else {
-        System.out.println("Interbank transfer failed!");
-        System.out.println("Response code: " + response.getResponseCode());
-        System.out.println("Response message: " + response.getResponseMessage());
-    }
+        // ======== STEP 5: Send the request and process the response ========
+            System.out.println("Sending interbank transfer request...");
+            TransferInterbankResponse response = client.transferInterbank().transfer(request);
+            
+            System.out.println("\n===== INTERBANK TRANSFER SUCCESSFUL =====");
+            System.out.println("Response code: " + response.getResponseCode());
+            System.out.println("Response message: " + response.getResponseMessage());
+            
 } catch (FaspaySnapApiException e) {
     System.err.println("Error: " + e.getMessage());
     e.printStackTrace();
@@ -345,7 +345,7 @@ Amount amount = new Amount("100000.00", "IDR");
 
 // Create a request object
 TransferInterbankRequest request = new TransferInterbankRequest(
-    "REF-" + System.currentTimeMillis(),  // Unique partner reference number
+    System.currentTimeMillis(),  // Unique partner reference number
     amount,                               // Amount object with value and currency
     "John Doe",                           // Beneficiary account name
     "1234567890",                         // Beneficiary account number
@@ -456,7 +456,7 @@ try {
     // Perform a bill inquiry with direct parameters
     BillInquiryResponse response = client.billInquiry().inquiry(
         new BillInquiryRequest(
-            "REF-" + System.currentTimeMillis(),  // Unique partner reference number
+            System.currentTimeMillis(),  // Unique partner reference number
             "7008",                               // Partner service ID
             "08000047816",                        // Customer number
             "700808000047816",                    // Virtual account number
@@ -537,7 +537,7 @@ try {
     // Perform a bill payment
     BillPaymentResponse response = client.billPayment().pay(
         new BillPaymentRequest(
-            "REF-" + System.currentTimeMillis(),  // Unique partner reference number
+            System.currentTimeMillis(),  // Unique partner reference number
             "7008",                               // Partner service ID
             "08000047816",                        // Customer number
             "700808000047816",                    // Virtual account number
@@ -590,7 +590,7 @@ try {
 
     // Create request object
     CustomerTopupRequest request = new CustomerTopupRequest();
-    request.setPartnerReferenceNo("REF-" + System.currentTimeMillis());
+    request.setPartnerReferenceNo(System.currentTimeMillis());
     request.setCustomerNumber("0812254830");  // Customer's phone number
     request.setAmount(amount);
     request.setTransactionDate(ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")));
@@ -648,7 +648,7 @@ import id.co.faspay.snap.exception.FaspaySnapApiException;
 try {
     // Create request object with partner reference number and transaction identifiers
     CustomerTopupStatusRequest request = new CustomerTopupStatusRequest(
-        "REF-12345678",  // Partner reference number used in the original topup request
+        "12345678",  // Partner reference number used in the original topup request
         "150207",        // Transaction ID
         "38"             // Additional identifier
     );
@@ -820,7 +820,7 @@ import id.co.faspay.snap.exception.FaspaySnapApiException;
 try {
     // Create request object with partner reference number and transaction identifiers
     StatusTransferRequest request = new StatusTransferRequest(
-        "REF-12345678",  // Partner reference number used in the original transfer request
+        "12345678",  // Partner reference number used in the original transfer request
         "150120",        // Transaction ID
         "18"             // Additional identifier
     );
