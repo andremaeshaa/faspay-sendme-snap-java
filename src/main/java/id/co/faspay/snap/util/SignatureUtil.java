@@ -1,8 +1,8 @@
 package id.co.faspay.snap.util;
 
 import org.apache.commons.codec.binary.Hex;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,7 +24,7 @@ public class SignatureUtil {
     private static final String RSA_SHA256 = "SHA256withRSA";
     private static final String SHA256 = "SHA-256";
     private static final String RSA = "RSA";
-    
+
     // Pattern to match whitespace for JSON minification
     private static final Pattern WHITESPACE_PATTERN = Pattern.compile("\\s+");
 
@@ -36,7 +36,7 @@ public class SignatureUtil {
                 .replace("-----END RSA PRIVATE KEY-----", "")
                 .replaceAll("\\s+", ""); // Remove all whitespace including newlines
     }
-    
+
     /**
      * Generates a signature for the given payload using the provided private key.
      * The signature is generated using HMAC-SHA256.
@@ -51,7 +51,7 @@ public class SignatureUtil {
             Mac hmacSha256 = Mac.getInstance(HMAC_SHA256);
             SecretKeySpec secretKey = new SecretKeySpec(privateKey.getBytes(StandardCharsets.UTF_8), HMAC_SHA256);
             hmacSha256.init(secretKey);
-            
+
             byte[] hmacBytes = hmacSha256.doFinal(payload.getBytes(StandardCharsets.UTF_8));
             return Hex.encodeHexString(hmacBytes);
         } catch (NoSuchAlgorithmException | InvalidKeyException e) {
@@ -59,7 +59,7 @@ public class SignatureUtil {
             throw new IllegalStateException("Error generating signature: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Generates an RSA signature using SHA256withRSA algorithm.
      *
@@ -75,12 +75,12 @@ public class SignatureUtil {
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(privateKeyBytes);
             KeyFactory keyFactory = KeyFactory.getInstance(RSA);
             PrivateKey privateKey = keyFactory.generatePrivate(keySpec);
-            
+
             // Create signature
             Signature signature = Signature.getInstance(RSA_SHA256);
             signature.initSign(privateKey);
             signature.update(stringToSign.getBytes(StandardCharsets.UTF_8));
-            
+
             byte[] signatureBytes = signature.sign();
             return Base64.getEncoder().encodeToString(signatureBytes);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | InvalidKeyException | SignatureException e) {
@@ -88,7 +88,7 @@ public class SignatureUtil {
             throw new IllegalStateException("Error generating RSA signature: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Creates a string to sign according to the formula:
      * HTTPMethod + ":" + EndpointUrl + ":" + Lowercase(HexEncode(SHA256(minify(RequestBody)))) + ":" + TimeStamp
@@ -103,14 +103,14 @@ public class SignatureUtil {
         try {
             // Minify the request body (remove unnecessary whitespace)
             String minifiedBody = minifyJson(requestBody);
-            
+
             // Calculate SHA256 hash of minified body
             MessageDigest digest = MessageDigest.getInstance(SHA256);
             byte[] hashBytes = digest.digest(minifiedBody.getBytes(StandardCharsets.UTF_8));
-            
+
             // Convert to hex and lowercase
             String hexHash = Hex.encodeHexString(hashBytes).toLowerCase();
-            
+
             // Build the string to sign
             return httpMethod + ":" + endpointUrl + ":" + hexHash + ":" + timestamp;
         } catch (NoSuchAlgorithmException e) {
@@ -118,7 +118,7 @@ public class SignatureUtil {
             throw new IllegalStateException("Error creating string to sign: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Minifies JSON by removing unnecessary whitespace.
      * This is a simple implementation that removes spaces, tabs, and newlines between JSON elements.
@@ -130,11 +130,11 @@ public class SignatureUtil {
         if (json == null || json.trim().isEmpty()) {
             return json;
         }
-        
+
         StringBuilder result = new StringBuilder();
         boolean inString = false;
         boolean escaped = false;
-        
+
         for (char c : json.toCharArray()) {
             if (escaped) {
                 result.append(c);
@@ -151,10 +151,10 @@ public class SignatureUtil {
                 result.append(c);
             }
         }
-        
+
         return result.toString();
     }
-    
+
     /**
      * Complete method that creates string to sign and generates RSA signature.
      *
@@ -172,7 +172,7 @@ public class SignatureUtil {
         logger.debug("String to sign: {}", stringToSign);
         return generateRSASignature(stringToSign, privateKeyBase64);
     }
-    
+
     /**
      * Verifies that the provided signature matches the expected signature for the given payload and private key.
      *

@@ -16,8 +16,8 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import id.co.faspay.snap.model.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 /**
  * The FaspaySnapConfig class is responsible for managing the configuration

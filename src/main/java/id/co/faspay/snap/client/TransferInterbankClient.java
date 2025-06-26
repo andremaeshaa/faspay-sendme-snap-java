@@ -6,8 +6,8 @@ import id.co.faspay.snap.model.Amount;
 import id.co.faspay.snap.model.Constants;
 import id.co.faspay.snap.model.TransferInterbankRequest;
 import id.co.faspay.snap.model.TransferInterbankResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public class TransferInterbankClient {
     private final Constants constants;
 
     private final FaspaySnapHttpClient httpClient;
-    
+
     /**
      * Creates a new Transfer Interbank client with the provided configuration.
      *
@@ -33,7 +33,7 @@ public class TransferInterbankClient {
         this.httpClient = new FaspaySnapHttpClient(config);
         this.constants = new Constants();
     }
-    
+
     /**
      * Transfers money between banks.
      *
@@ -58,13 +58,13 @@ public class TransferInterbankClient {
         Objects.requireNonNull(beneficiaryBankCode, "beneficiaryBankCode must not be null");
         Objects.requireNonNull(sourceAccountNumber, "sourceAccountNumber must not be null");
         Objects.requireNonNull(transactionDate, "transactionDate must not be null");
-        
+
         TransferInterbankRequest request = new TransferInterbankRequest(partnerReferenceNumber, amount, 
                 beneficiaryAccountName, beneficiaryAccountNumber, beneficiaryBankCode, 
                 sourceAccountNumber);
         return transfer(request);
     }
-    
+
     /**
      * Transfers money between banks.
      *
@@ -74,18 +74,18 @@ public class TransferInterbankClient {
      */
     public TransferInterbankResponse transfer(TransferInterbankRequest request) throws FaspaySnapApiException {
         Objects.requireNonNull(request, "request must not be null");
-        
+
         logger.info("Transferring {} {} from account {} to account {} at bank {}", 
                 request.getAmount().getValue(), request.getAmount().getCurrency(),
                 request.getSourceAccountNumber(), request.getBeneficiaryAccountNumber(), 
                 request.getBeneficiaryBankCode());
-        
+
         try {
             TransferInterbankResponse response = httpClient.post(constants.getEndpointTransferInterbank(), 
                     constants.getUserAgent(), request, TransferInterbankResponse.class);
-            
+
             logger.info("Transfer completed with response code: {}", response.getResponseCode());
-            
+
             return response;
         } catch (FaspaySnapApiException e) {
             logger.error("Error transferring money: {}", e.getMessage());

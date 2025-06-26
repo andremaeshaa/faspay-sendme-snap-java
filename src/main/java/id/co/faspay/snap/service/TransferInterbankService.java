@@ -6,8 +6,8 @@ import id.co.faspay.snap.exception.FaspaySnapApiException;
 import id.co.faspay.snap.model.Amount;
 import id.co.faspay.snap.model.TransferInterbankRequest;
 import id.co.faspay.snap.model.TransferInterbankResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 import java.time.OffsetDateTime;
 import java.util.Objects;
@@ -18,9 +18,9 @@ import java.util.Objects;
  */
 public class TransferInterbankService {
     private static final Logger logger = LoggerFactory.getLogger(TransferInterbankService.class);
-    
+
     private final TransferInterbankClient transferInterbankClient;
-    
+
     /**
      * Creates a new Transfer Interbank service with the provided configuration.
      *
@@ -30,7 +30,7 @@ public class TransferInterbankService {
         Objects.requireNonNull(config, "config must not be null");
         this.transferInterbankClient = new TransferInterbankClient(config);
     }
-    
+
     /**
      * Transfers money between banks.
      *
@@ -55,19 +55,19 @@ public class TransferInterbankService {
         Objects.requireNonNull(beneficiaryBankCode, "beneficiaryBankCode must not be null");
         Objects.requireNonNull(sourceAccountNumber, "sourceAccountNumber must not be null");
         Objects.requireNonNull(transactionDate, "transactionDate must not be null");
-        
+
         logger.debug("Processing interbank transfer request for {} {} from account {} to account {} at bank {}", 
                 amount.getValue(), amount.getCurrency(), sourceAccountNumber, beneficiaryAccountNumber, beneficiaryBankCode);
-        
+
         // Here we could add additional business logic before making the API call
         // For example, validation, transformation, caching, etc.
-        
+
         TransferInterbankRequest request = new TransferInterbankRequest(partnerReferenceNumber, amount, 
                 beneficiaryAccountName, beneficiaryAccountNumber, beneficiaryBankCode, 
                 sourceAccountNumber);
         return transfer(request);
     }
-    
+
     /**
      * Transfers money between banks.
      *
@@ -77,23 +77,23 @@ public class TransferInterbankService {
      */
     public TransferInterbankResponse transfer(TransferInterbankRequest request) throws FaspaySnapApiException {
         Objects.requireNonNull(request, "request must not be null");
-        
+
         logger.debug("Processing interbank transfer request: {}", request);
-        
+
         // Here we could add additional business logic before making the API call
-        
+
         try {
 
             // Here we could add additional business logic after receiving the API response
             // For example, enrichment, transformation, caching, etc.
-            
+
             return transferInterbankClient.transfer(request);
         } catch (FaspaySnapApiException e) {
             logger.error("Error processing interbank transfer: {}", e.getMessage());
             throw e;
         }
     }
-    
+
     /**
      * Transfers money between banks with additional information.
      *
@@ -124,30 +124,30 @@ public class TransferInterbankService {
         Objects.requireNonNull(beneficiaryBankCode, "beneficiaryBankCode must not be null");
         Objects.requireNonNull(sourceAccountNumber, "sourceAccountNumber must not be null");
         Objects.requireNonNull(transactionDate, "transactionDate must not be null");
-        
+
         logger.debug("Processing interbank transfer request with additional info for {} {} from account {} to account {} at bank {}", 
                 amount.getValue(), amount.getCurrency(), sourceAccountNumber, beneficiaryAccountNumber, beneficiaryBankCode);
-        
+
         TransferInterbankRequest request = new TransferInterbankRequest(partnerReferenceNumber, amount, 
                 beneficiaryAccountName, beneficiaryAccountNumber, beneficiaryBankCode, 
                 sourceAccountNumber);
-        
+
         if (beneficiaryEmail != null) {
             request.setBeneficiaryEmail(beneficiaryEmail);
         }
-        
+
         if (instructDate != null) {
             request.setInstructDate(instructDate);
         }
-        
+
         if (transactionDescription != null) {
             request.setTransactionDescription(transactionDescription);
         }
-        
+
         if (callbackUrl != null) {
             request.setCallbackUrl(callbackUrl);
         }
-        
+
         return transfer(request);
     }
 }

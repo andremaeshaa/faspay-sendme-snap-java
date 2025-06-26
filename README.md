@@ -866,6 +866,68 @@ The SDK is organized into the following packages:
 - `id.co.faspay.snap.util` - Utility classes
 - `id.co.faspay.snap.example` - Example code for each service
 
+## Publishing to Maven Central
+
+This SDK is configured to be published to Maven Central. Follow these steps to publish a new version:
+
+### Prerequisites
+
+1. **Sonatype OSSRH Account**: You need an account on [Sonatype OSSRH](https://central.sonatype.org/publish/publish-guide/).
+   - Register at [Sonatype JIRA](https://issues.sonatype.org/secure/Signup)
+   - Create a new project ticket to request access to publish under your group ID
+
+2. **GPG Key**: You need a GPG key pair to sign the artifacts.
+   - Install GPG: [GnuPG](https://gnupg.org/download/)
+   - Generate a key pair: `gpg --gen-key`
+   - List your keys: `gpg --list-keys`
+   - Publish your key: `gpg --keyserver keyserver.ubuntu.com --send-keys YOUR_KEY_ID`
+
+### Configuration
+
+1. **Update gradle.properties**: Create or update your `~/.gradle/gradle.properties` file with your credentials:
+
+```properties
+# Sonatype credentials
+sonatype.username=your_sonatype_username
+sonatype.password=your_sonatype_password
+
+# Signing configuration
+signing.keyId=YOUR_KEY_ID_LAST_8_CHARS
+signing.password=your_gpg_key_password
+signing.secretKeyRingFile=C:/Users/your_username/.gnupg/secring.gpg
+```
+
+2. **Export your secret key ring file** (if it doesn't exist):
+   - For GPG 2.1 and newer: `gpg --export-secret-keys -o secring.gpg`
+   - Move the file to the location specified in your gradle.properties
+
+### Publishing Process
+
+1. **Prepare the release**:
+   - Update the version in `build.gradle.kts`
+   - Update the README.md with the new version
+   - Commit and push your changes
+
+2. **Build and publish**:
+   - Run the following command to publish to Maven Central:
+     ```
+     ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository
+     ```
+   - This will:
+     - Build the project
+     - Sign the artifacts
+     - Upload to Sonatype OSSRH
+     - Close and release the staging repository
+
+3. **Verify the publication**:
+   - Check the status in the [Sonatype Repository Manager](https://s01.oss.sonatype.org/)
+   - The artifacts will be available in Maven Central within a few hours
+
+### Troubleshooting
+
+- If you encounter signing issues, make sure your GPG key is correctly set up and the password is correct
+- If you have issues with the Sonatype repository, check the [Sonatype OSSRH Guide](https://central.sonatype.org/publish/publish-guide/)
+
 ## Contributing
 
 Contributions to the SDK are welcome! If you find a bug or have a feature request, please open an issue on the GitHub repository. If you want to contribute code, please fork the repository and submit a pull request.

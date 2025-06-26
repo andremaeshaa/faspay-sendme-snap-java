@@ -5,14 +5,12 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import id.co.faspay.snap.config.FaspaySnapConfig;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
-import id.co.faspay.snap.model.Constants;
 import id.co.faspay.snap.util.SignatureUtil;
 import okhttp3.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -23,11 +21,11 @@ import java.util.concurrent.TimeUnit;
 public class FaspaySnapHttpClient {
     private static final Logger logger = LoggerFactory.getLogger(FaspaySnapHttpClient.class);
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    
+
     private final FaspaySnapConfig config;
     private final OkHttpClient httpClient;
     private final ObjectMapper objectMapper;
-    
+
     /**
      * Creates a new HTTP client with the provided configuration.
      *
@@ -35,7 +33,7 @@ public class FaspaySnapHttpClient {
      */
     public FaspaySnapHttpClient(FaspaySnapConfig config) {
         this.config = Objects.requireNonNull(config, "config must not be null");
-        
+
         // Configure OkHttpClient with SSL context from config
         this.httpClient = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
@@ -43,13 +41,13 @@ public class FaspaySnapHttpClient {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .sslSocketFactory(config.getSslContext().getSocketFactory(), config.getTrustManager())
                 .build();
-        
+
         // Configure ObjectMapper for JSON serialization/deserialization
         this.objectMapper = new ObjectMapper()
                 .registerModule(new JavaTimeModule())
                 .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
-    
+
     /**
      * Makes a POST request to the specified endpoint with the given request body.
      *
@@ -69,7 +67,7 @@ public class FaspaySnapHttpClient {
             String privateKey = SignatureUtil.cleanPrivateKey(config.getPrivateKey());
             String stringToSign = SignatureUtil.createStringToSign("POST", endpoint, requestJson, timeStamp);
             String signature = SignatureUtil.generateRSASignature(stringToSign, privateKey);
-            
+
             // Build the request
             Request request = new Request.Builder()
                     .url(url)
@@ -83,9 +81,9 @@ public class FaspaySnapHttpClient {
                     .header("X-EXTERNAL-ID", config.getExternalId())
                     .header("CHANNEL-ID", "88001")
                     .build();
-            
+
             logger.debug("Making POST request to {}: {}", url, requestJson);
-            
+
             // Execute the request
             try (Response response = httpClient.newCall(request).execute()) {
                 return handleResponse(response, responseType);
@@ -95,7 +93,7 @@ public class FaspaySnapHttpClient {
             throw new FaspaySnapApiException("Error making POST request: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Handles the HTTP response and converts it to the expected response type.
      *
@@ -108,13 +106,13 @@ public class FaspaySnapHttpClient {
      */
     private <T> T handleResponse(Response response, Class<T> responseType) throws IOException, FaspaySnapApiException {
         String responseBody = response.body() != null ? response.body().string() : "";
-        
+
         logger.debug("Received response with: {}", responseBody);
-        
+
         if (!response.isSuccessful()) {
             throw new FaspaySnapApiException("API request failed with status code " + response.code() + ": " + responseBody);
         }
-        
+
         try {
             return objectMapper.readValue(responseBody, responseType);
         } catch (IOException e) {
@@ -122,7 +120,7 @@ public class FaspaySnapHttpClient {
             throw new FaspaySnapApiException("Error parsing response: " + e.getMessage(), e);
         }
     }
-    
+
     /**
      * Gets the ObjectMapper used by this client.
      *

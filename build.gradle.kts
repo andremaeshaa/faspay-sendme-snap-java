@@ -1,11 +1,25 @@
 plugins {
     id("java")
     id("maven-publish")
+    id("signing")
+    id("io.github.gradle-nexus.publish-plugin") version "1.3.0"
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "id.co.faspay"
 version = "1.0.0"
+
+// Configure Nexus publishing
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://s01.oss.sonatype.org/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://s01.oss.sonatype.org/content/repositories/snapshots/"))
+            username.set(findProperty("sonatype.username") as String? ?: "")
+            password.set(findProperty("sonatype.password") as String? ?: "")
+        }
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -32,9 +46,7 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")
 
-    // Logging
-    implementation("org.slf4j:slf4j-api:2.0.9")
-    implementation("ch.qos.logback:logback-classic:1.5.13")
+    // Logging is now handled by internal implementation
 
     // Utilities
     implementation("org.apache.commons:commons-lang3:3.13.0")
@@ -47,11 +59,18 @@ dependencies {
     testImplementation("org.mockito:mockito-core:5.4.0")
     testImplementation("org.mockito:mockito-junit-jupiter:5.4.0")
     testImplementation("com.squareup.okhttp3:mockwebserver:4.11.0")
-    testRuntimeOnly("org.slf4j:slf4j-simple:2.0.9")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Main-Class" to "id.co.faspay.Main"
+        )
+    }
 }
 
 tasks.shadowJar {
@@ -64,12 +83,17 @@ tasks.shadowJar {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            project.shadow.component(this)
+//            project.shadow.component(this)
+            from(components["java"])
 
             // Pastikan artifactId dan groupId benar
             artifactId = "faspay-sendme-snap-java"
             groupId = "id.co.faspay"
             version = "1.0.0"
+
+            artifact(tasks.shadowJar.get()) {
+                classifier = "all" // ini hanya tambahan, bukan artefak utama
+            }
 
             pom {
                 name.set("Faspay SendMe Snap Java SDK")
@@ -106,4 +130,20 @@ publishing {
             url = uri("$buildDir/repo")
         }
     }
+}
+
+// Configure signing
+signing {
+    val signingKeyId: String? = findProperty("signing.keyId") as String?
+    val signingPassword: String? = findProperty("signing.password") as String?
+    val signingSecretKeyRingFile: String? = findProperty("signing.secretKeyRingFile") as String?
+
+    if (signingSecretKeyRingFile != null && file(signingSecretKeyRingFile).exists()) {
+        useInMemoryPgpKeys(signingKeyId, signingPassword, file(signingSecretKeyRingFile).readText())
+    } else {
+        // Use gpg command line tool
+        useGpgCmd()
+    }
+
+    sign(publishing.publications["maven"])
 }

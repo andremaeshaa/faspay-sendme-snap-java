@@ -5,8 +5,8 @@ import id.co.faspay.snap.exception.FaspaySnapApiException;
 import id.co.faspay.snap.model.BillPaymentRequest;
 import id.co.faspay.snap.model.BillPaymentResponse;
 import id.co.faspay.snap.model.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import id.co.faspay.snap.logging.Logger;
+import id.co.faspay.snap.logging.LoggerFactory;
 
 import java.util.Objects;
 
