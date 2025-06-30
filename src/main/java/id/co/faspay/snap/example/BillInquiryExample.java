@@ -21,7 +21,7 @@ public class BillInquiryExample {
     public static void main(String[] args) throws IOException {
         // Load SSL certificate and private key from resources
         URL resourceSsl = BillInquiryExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = BillInquiryExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = BillInquiryExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());

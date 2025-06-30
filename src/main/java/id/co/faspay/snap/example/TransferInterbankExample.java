@@ -11,9 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.time.OffsetDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 
 /**
  * Example demonstrating how to use the Faspay SendMe Snap SDK for interbank transfers.
@@ -33,7 +30,7 @@ public class TransferInterbankExample {
         // ======== STEP 1: Load SSL certificate and private key ========
         // These files should be in your resources directory
         URL resourceSsl = TransferInterbankExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = TransferInterbankExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = TransferInterbankExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());

@@ -1,6 +1,7 @@
 package id.co.faspay.snap.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -353,18 +354,14 @@ public class AccountInquiryResponse {
 
     @Override
     public String toString() {
-        return "AccountInquiryResponse{" +
-                "status='" + status + '\'' +
-                ", responseCode='" + responseCode + '\'' +
-                ", responseMessage='" + responseMessage + '\'' +
-                ", referenceNo='" + referenceNo + '\'' +
-                ", partnerReferenceNumber='" + partnerReferenceNumber + '\'' +
-                ", accountHolderName='" + accountHolderName + '\'' +
-                ", accountNumber='" + accountNumber + '\'' +
-                ", bankCode='" + bankCode + '\'' +
-                ", bankName='" + bankName + '\'' +
-                ", currency='" + currency + '\'' +
-                ", additionalInfo=" + additionalInfo +
-                '}';
+        try {
+            ObjectMapper mapper = new ObjectMapper()
+                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+                    .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+            return mapper.writeValueAsString(this);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            return "AccountInquiry{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
+        }
     }
 }

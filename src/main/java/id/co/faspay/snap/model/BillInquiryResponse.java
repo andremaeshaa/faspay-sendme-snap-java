@@ -135,7 +135,7 @@ public class BillInquiryResponse {
 //            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
             return mapper.writeValueAsString(this);
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            return "CustomerTopupRequest{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
+            return "BillInquiry{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
         }
     }
 

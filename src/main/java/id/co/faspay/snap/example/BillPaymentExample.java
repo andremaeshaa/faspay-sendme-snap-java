@@ -22,7 +22,7 @@ public class BillPaymentExample {
     public static void main(String[] args) throws IOException {
         // Load SSL certificate and private key from resources
         URL resourceSsl = BillPaymentExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = BillPaymentExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = BillPaymentExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());

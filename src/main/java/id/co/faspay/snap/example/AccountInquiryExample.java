@@ -10,7 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.util.Objects;
 
 /**
  * Example demonstrating how to use the Faspay SendMe Snap SDK for account inquiry.
@@ -29,7 +28,7 @@ public class AccountInquiryExample {
         // ======== STEP 1: Load SSL certificate and private key ========
         // These files should be in your resources directory
         URL resourceSsl = AccountInquiryExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());

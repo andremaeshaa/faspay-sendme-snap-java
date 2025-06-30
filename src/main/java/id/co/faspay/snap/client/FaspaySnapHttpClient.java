@@ -64,9 +64,9 @@ public class FaspaySnapHttpClient {
             String timeStamp = config.getTimestamp();
             String requestJson = requestBody.toString();
 
-            String privateKey = SignatureUtil.cleanPrivateKey(config.getPrivateKey());
+//            String privateKey = SignatureUtil.cleanPrivateKey(config.getPrivateKey());
             String stringToSign = SignatureUtil.createStringToSign("POST", endpoint, requestJson, timeStamp);
-            String signature = SignatureUtil.generateRSASignature(stringToSign, privateKey);
+            String signature = SignatureUtil.generateRSASignature(stringToSign, config.getPrivateKey());
 
             // Build the request
             Request request = new Request.Builder()

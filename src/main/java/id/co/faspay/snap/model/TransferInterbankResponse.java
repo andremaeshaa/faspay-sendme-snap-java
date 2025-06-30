@@ -454,11 +454,13 @@ public class TransferInterbankResponse {
     @Override
     public String toString() {
         try {
-            return new ObjectMapper()
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(this);
+            ObjectMapper mapper = new ObjectMapper()
+                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+                    .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+            return mapper.writeValueAsString(this);
         } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
-            return "TransferInterbankResponse{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
+            return "TransferInterbank{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
         }
     }
 }

@@ -29,6 +29,8 @@ dependencies {
     // HTTP Client
     implementation("com.squareup.okhttp3:okhttp:4.11.0")
 
+    implementation("org.bouncycastle:bcprov-jdk15to18:1.78")
+
     // JSON Processing
     implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.2")

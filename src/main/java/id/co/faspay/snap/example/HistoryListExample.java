@@ -5,8 +5,6 @@ import id.co.faspay.snap.config.FaspaySnapConfig;
 import id.co.faspay.snap.exception.FaspaySnapApiException;
 import id.co.faspay.snap.model.HistoryListRequest;
 import id.co.faspay.snap.model.HistoryListResponse;
-import id.co.faspay.snap.model.StatusTransferRequest;
-import id.co.faspay.snap.model.StatusTransferResponse;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,7 +14,7 @@ import java.nio.file.Files;
 public class HistoryListExample {
     public static void main(String[] args) throws IOException {
         URL resourceSsl = AccountInquiryExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());

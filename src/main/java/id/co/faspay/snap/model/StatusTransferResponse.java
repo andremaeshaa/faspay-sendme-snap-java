@@ -1,6 +1,7 @@
 package id.co.faspay.snap.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -455,21 +456,14 @@ public class StatusTransferResponse {
 
     @Override
     public String toString() {
-        return "StatusTransferResponse{" +
-                "responseCode='" + responseCode + '\'' +
-                ", responseMessage='" + responseMessage + '\'' +
-                ", originalReferenceNo='" + originalReferenceNo + '\'' +
-                ", originalPartnerReferenceNo='" + originalPartnerReferenceNo + '\'' +
-                ", serviceCode='" + serviceCode + '\'' +
-                ", transactionDate='" + transactionDate + '\'' +
-                ", amount=" + amount +
-                ", beneficiaryAccountNo='" + beneficiaryAccountNo + '\'' +
-                ", beneficiaryBankCode='" + beneficiaryBankCode + '\'' +
-                ", referenceNumber='" + referenceNumber + '\'' +
-                ", sourceAccountNo='" + sourceAccountNo + '\'' +
-                ", latestTransactionStatus='" + latestTransactionStatus + '\'' +
-                ", transactionStatusDesc='" + transactionStatusDesc + '\'' +
-                ", additionalInfo=" + additionalInfo +
-                '}';
+        try {
+            ObjectMapper mapper = new ObjectMapper()
+                    .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
+                    .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+//            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(this);
+            return mapper.writeValueAsString(this);
+        } catch (com.fasterxml.jackson.core.JsonProcessingException e) {
+            return "StatusTransfer{error: \"Failed to convert to JSON: " + e.getMessage() + "\"}";
+        }
     }
 }

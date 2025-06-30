@@ -14,7 +14,7 @@ import java.nio.file.Files;
 public class TransferStatusExample {
     public static void main(String[] args) throws IOException {
         URL resourceSsl = AccountInquiryExample.class.getResource("/faspay.crt");
-        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg.key");
+        URL privateKeyResource = AccountInquiryExample.class.getResource("/enc_stg_ori.key");
 
         assert privateKeyResource != null;
         String privateKeyStr = Files.readString(new File(privateKeyResource.getFile()).toPath());
