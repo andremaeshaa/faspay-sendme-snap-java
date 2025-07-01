@@ -82,8 +82,8 @@ public class AccountInquiryExample {
                 System.out.println("Faspay reference number: " + response.getReferenceNo());
                 System.out.println("Partner reference number: " + response.getPartnerReferenceNumber());
 
-                System.out.println("status: " + response.getStatus());
-                System.out.println("message: " + response.getMessage());
+                System.out.println("status: " + response.getAdditionalInfo().get("status") );
+                System.out.println("message: " + response.getAdditionalInfo().get("message"));
 
                 // Print additional info if available
                 if (response.getAdditionalInfo() != null && !response.getAdditionalInfo().isEmpty()) {
@@ -91,6 +91,8 @@ public class AccountInquiryExample {
                     response.getAdditionalInfo().forEach((key, value) -> 
                         System.out.println(key + ": " + value));
                 }
+
+                System.out.println("respone: " + response.toString());
             } else {
                 System.out.println("\n===== ACCOUNT INQUIRY FAILED =====");
                 System.out.println("Response code: " + response.getResponseCode());

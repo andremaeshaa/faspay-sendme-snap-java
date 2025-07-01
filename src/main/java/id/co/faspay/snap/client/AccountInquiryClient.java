@@ -66,7 +66,7 @@ public class AccountInquiryClient {
         try {
             AccountInquiryResponse response = httpClient.post(constants.getEndpointAccountInquiry(), constants.getUserAgent(), request, AccountInquiryResponse.class);
 
-            logger.info("Account inquiry completed with status: {}", response.getStatus());
+            logger.info("Account inquiry completed with status: {}", response.getAdditionalInfo().get("status"));
 
             return response;
         } catch (FaspaySnapApiException e) {

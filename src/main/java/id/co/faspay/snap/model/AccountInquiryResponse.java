@@ -1,7 +1,11 @@
 package id.co.faspay.snap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,8 +17,8 @@ import java.util.Objects;
  */
 public class AccountInquiryResponse {
 
-    @JsonProperty("additionalInfo.status")
-    private String status;
+//    @JsonProperty("additionalInfo.status")
+//    private String status;
 
     @JsonProperty("responseCode")
     private String responseCode;
@@ -51,36 +55,6 @@ public class AccountInquiryResponse {
      */
     public AccountInquiryResponse() {
         this.additionalInfo = new HashMap<>();
-    }
-
-    /**
-     * Gets the status from additionalInfo.
-     *
-     * @return The status from additionalInfo, or null if not present
-     */
-    public String getStatus() {
-        return additionalInfo != null ? additionalInfo.get("status") : null;
-    }
-
-    /**
-     * Gets the message from additionalInfo.
-     *
-     * @return The message from additionalInfo, or null if not present
-     */
-    public String getMessage() {
-        return additionalInfo != null ? additionalInfo.get("message") : null;
-    }
-
-
-    /**
-     * Sets the status of the inquiry.
-     *
-     * @param status The status
-     * @return This response object
-     */
-    public AccountInquiryResponse setStatus(String status) {
-        this.status = status;
-        return this;
     }
 
     /**
@@ -224,26 +198,15 @@ public class AccountInquiryResponse {
     }
 
     /**
-     * Gets the Faspay reference number.
-     * @deprecated Use {@link #getReferenceNo()} instead.
-     *
-     * @return The reference number
-     */
-    @Deprecated
-    public String getFaspayReferenceNumber() {
-        return referenceNo;
-    }
-
-    /**
      * Sets the Faspay reference number.
      * @deprecated Use {@link #setReferenceNo(String)} instead.
      *
-     * @param faspayReferenceNumber The reference number
+     * @param referenceNo The reference number
      * @return This response object
      */
     @Deprecated
-    public AccountInquiryResponse setFaspayReferenceNumber(String faspayReferenceNumber) {
-        this.referenceNo = faspayReferenceNumber;
+    public AccountInquiryResponse setFaspayReferenceNumber(String referenceNo) {
+        this.referenceNo = referenceNo;
         return this;
     }
 
@@ -324,6 +287,7 @@ public class AccountInquiryResponse {
      *
      * @return True if the inquiry was successful, false otherwise
      */
+    @JsonIgnore
     public boolean isSuccess() {
         return Objects.equals(responseCode, "2001600");
     }
@@ -333,8 +297,7 @@ public class AccountInquiryResponse {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AccountInquiryResponse that = (AccountInquiryResponse) o;
-        return Objects.equals(status, that.status) &&
-                Objects.equals(responseCode, that.responseCode) &&
+        return Objects.equals(responseCode, that.responseCode) &&
                 Objects.equals(responseMessage, that.responseMessage) &&
                 Objects.equals(referenceNo, that.referenceNo) &&
                 Objects.equals(bankCode, that.bankCode) &&
@@ -348,7 +311,7 @@ public class AccountInquiryResponse {
 
     @Override
     public int hashCode() {
-        return Objects.hash(status, responseCode, responseMessage, referenceNo, bankCode, bankName,
+        return Objects.hash(responseCode, responseMessage, referenceNo, bankCode, bankName,
                 accountNumber, accountHolderName, partnerReferenceNumber, currency, additionalInfo);
     }
 

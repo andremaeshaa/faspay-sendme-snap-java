@@ -1,5 +1,6 @@
 package id.co.faspay.snap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -231,6 +232,7 @@ public class CustomerTopupStatusResponse {
      *
      * @return True if the inquiry was successful, false otherwise
      */
+    @JsonIgnore
     public boolean isSuccess() {
         return Objects.equals(responseCode, "2003900");
     }
