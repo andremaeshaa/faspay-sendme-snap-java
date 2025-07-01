@@ -31,9 +31,12 @@ public class TransferStatusExample {
 
             StatusTransferRequest request = new StatusTransferRequest("20250623101414812", "150120", "18");
 
+            System.out.println("Request data: " + request.toString());
+
             StatusTransferResponse response = client.transferStatus().status(request);
 
             if (response.isSuccess()) {
+                System.out.println("Response data: " + response.toString());
                 System.out.println("response code: " + response.getResponseCode());
                 System.out.println("Transfer status: " + response.getLatestTransactionStatus());
                 System.out.println(response.getCallbackUrl());

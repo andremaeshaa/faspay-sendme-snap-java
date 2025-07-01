@@ -360,6 +360,7 @@ public class StatusTransferResponse {
      *
      * @return The beneficiary account name
      */
+    @JsonIgnore
     public String getBeneficiaryAccountName() {
         return additionalInfo != null ? additionalInfo.get("beneficiaryAccountName") : null;
     }
@@ -369,6 +370,7 @@ public class StatusTransferResponse {
      *
      * @return The beneficiary bank name
      */
+    @JsonIgnore
     public String getBeneficiaryBankName() {
         return additionalInfo != null ? additionalInfo.get("beneficiaryBankName") : null;
     }
@@ -378,6 +380,7 @@ public class StatusTransferResponse {
      *
      * @return The transaction description
      */
+    @JsonIgnore
     public String getTransactionDescription() {
         return additionalInfo != null ? additionalInfo.get("transactionDescription") : null;
     }
@@ -387,6 +390,7 @@ public class StatusTransferResponse {
      *
      * @return The callback URL
      */
+    @JsonIgnore
     public String getCallbackUrl() {
         return additionalInfo != null ? additionalInfo.get("callbackUrl") : null;
     }
@@ -396,6 +400,7 @@ public class StatusTransferResponse {
      *
      * @return The transaction status date
      */
+    @JsonIgnore
     public String getTransactionStatusDate() {
         return additionalInfo != null ? additionalInfo.get("transactionStatusDate") : null;
     }
@@ -415,6 +420,7 @@ public class StatusTransferResponse {
      *
      * @return True if the transaction is completed, false otherwise
      */
+    @JsonIgnore
     public boolean isTransactionCompleted() {
         return Objects.equals(latestTransactionStatus, "00");
     }
@@ -424,6 +430,7 @@ public class StatusTransferResponse {
      *
      * @return True if the transaction is pending, false otherwise
      */
+    @JsonIgnore
     public boolean isTransactionPending() {
         return Objects.equals(latestTransactionStatus, "03");
     }

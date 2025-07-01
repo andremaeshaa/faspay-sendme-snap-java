@@ -29,12 +29,14 @@ public class HistoryListExample {
             config.setEnv("sandbox");
             FaspaySnapClient client = new FaspaySnapClient(config);
 
-            HistoryListRequest request = new HistoryListRequest("2025-06-23T08:00:00+07:00", "2025-06-23T11:50:00+07:00", "9920017573");
+            HistoryListRequest request = new HistoryListRequest("2025-06-23T08:00:00+07:00", "2025-06-23T08:50:00+07:00", "9920017573");
+            System.out.println("Request data: " + request.toString());
             HistoryListResponse response = client.historyList().list(request);
 
             if (response.isSuccess()) {
+                System.out.println("Response data: " + response.toString());
                 System.out.println("response message: " + response.getResponseMessage());
-                System.out.println("response code: " + response.getDetailData());
+                System.out.println("getDetailData: " + response.getDetailData());
                 System.out.println("account_no: " + response.getAdditionalInfo().getAccountNo());
             }
         } catch (FaspaySnapApiException e) {

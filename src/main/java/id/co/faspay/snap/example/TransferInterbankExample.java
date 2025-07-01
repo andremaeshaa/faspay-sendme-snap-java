@@ -60,7 +60,7 @@ public class TransferInterbankExample {
 
             // Method 1: Using the constructor with required parameters
             TransferInterbankRequest request = new TransferInterbankRequest(
-                    "20250623101414882",       // partnerReferenceNo - Unique reference number for tracking
+                    "202506231014149906",       // partnerReferenceNo - Unique reference number for tracking
                     amount,                    // amount - Amount object with value and currency
                     "SUSANTO WANGSADJAJA",   // beneficiaryAccountName - Name of the recipient
                     "1197363",             // beneficiaryAccountNo - Account number of the recipient
@@ -72,6 +72,7 @@ public class TransferInterbankExample {
             request.setOriginatorCustomerName("PT kurang duit");
             request.setOriginatorCustomerNo("087742290748");
             request.setOriginatorBankCode("099");
+            request.setInstructDate("");
 
             // Add optional parameters
             request.setBeneficiaryEmail("andremaesha@gmail.com"); // Email of the recipient (for notifications)
@@ -80,10 +81,14 @@ public class TransferInterbankExample {
 
             // ======== STEP 5: Send the request and process the response ========
             System.out.println("Sending interbank transfer request...");
+
+            System.out.println("Request data: " + request.toString());
+
             TransferInterbankResponse response = client.transferInterbank().transfer(request);
 
             // Process the response
             if (response.isSuccess()) {
+                System.out.println("response: " + response.toString());
                 System.out.println("\n===== INTERBANK TRANSFER SUCCESSFUL =====");
                 System.out.println("Response code: " + response.getResponseCode());
                 System.out.println("Response message: " + response.getResponseMessage());

@@ -1,5 +1,6 @@
 package id.co.faspay.snap.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -248,6 +249,7 @@ public class TransferInterbankRequest {
         return transactionDate;
     }
 
+    @JsonIgnore
     public String getTimestamp() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX");
         return ZonedDateTime.now().format(formatter);
@@ -302,6 +304,7 @@ public class TransferInterbankRequest {
      *
      * @param instructDate The instruct date
      */
+    @JsonIgnore
     public void setInstructDate(String instructDate) {
         this.additionalInfo.put("instructDate", instructDate);
     }
@@ -311,6 +314,7 @@ public class TransferInterbankRequest {
      *
      * @return The instruct date
      */
+    @JsonIgnore
     public String getInstructDate() {
         return this.additionalInfo.get("instructDate");
     }
@@ -321,6 +325,7 @@ public class TransferInterbankRequest {
      * @param transactionDescription The transaction description
      * @return This request object
      */
+    @JsonIgnore
     public TransferInterbankRequest setTransactionDescription(String transactionDescription) {
         this.additionalInfo.put("transactionDescription", transactionDescription);
         return this;
@@ -331,6 +336,7 @@ public class TransferInterbankRequest {
      *
      * @return The transaction description
      */
+    @JsonIgnore
     public String getTransactionDescription() {
         return this.additionalInfo.get("transactionDescription");
     }
@@ -340,6 +346,7 @@ public class TransferInterbankRequest {
      *
      * @param callbackUrl The callback URL
      */
+    @JsonIgnore
     public void setCallbackUrl(String callbackUrl) {
         this.additionalInfo.put("callbackUrl", callbackUrl);
     }
@@ -349,6 +356,7 @@ public class TransferInterbankRequest {
      *
      * @return The callback URL
      */
+    @JsonIgnore
     public String getCallbackUrl() {
         return this.additionalInfo.get("callbackUrl");
     }
@@ -358,6 +366,7 @@ public class TransferInterbankRequest {
      *
      * @param customerName The originator's customer name to be set
      */
+    @JsonIgnore
     public void setOriginatorCustomerName(String customerName) {
         if (this.originatorInfos == null) {
             this.originatorInfos = new HashMap<>();
@@ -371,6 +380,7 @@ public class TransferInterbankRequest {
      *
      * @return The originator customer name if present, or null if the originator information is null or the key is not found.
      */
+    @JsonIgnore
     public String getOriginatorCustomerName() {
         return this.originatorInfos != null ? this.originatorInfos.get("originatorCustomerName") : null;
     }
@@ -381,6 +391,7 @@ public class TransferInterbankRequest {
      *
      * @param customerNo The originator customer number to set
      */
+    @JsonIgnore
     public void setOriginatorCustomerNo(String customerNo) {
         if (this.originatorInfos == null) {
             this.originatorInfos = new HashMap<>();
@@ -394,6 +405,7 @@ public class TransferInterbankRequest {
      *
      * @return The originator customer number if present; otherwise, null
      */
+    @JsonIgnore
     public String getOriginatorCustomerNo() {
         return this.originatorInfos != null ? this.originatorInfos.get("originatorCustomerNo") : null;
     }
@@ -404,6 +416,7 @@ public class TransferInterbankRequest {
      *
      * @param bankCode The bank code of the originator to be set
      */
+    @JsonIgnore
     public void setOriginatorBankCode(String bankCode) {
         if (this.originatorInfos == null) {
             this.originatorInfos = new HashMap<>();
@@ -417,6 +430,7 @@ public class TransferInterbankRequest {
      *
      * @return The originator bank code if present; otherwise, null.
      */
+    @JsonIgnore
     public String getOriginatorBankCode() {
         return this.originatorInfos != null ? this.originatorInfos.get("originatorBankCode") : null;
     }

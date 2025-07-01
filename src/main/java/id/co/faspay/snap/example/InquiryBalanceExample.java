@@ -32,7 +32,11 @@ public class InquiryBalanceExample {
             InquiryBalanceRequest request = new InquiryBalanceRequest("9920017573");
             InquiryBalanceResponse response = client.inquiryBalance().balance(request);
 
+            System.out.println("Request data: " + request.toString());
+            System.out.println("Response data: " + response.toString());
+
             System.out.println("response code: " + response.getResponseCode());
+            System.out.println("response message: " + response.toString());
         } catch (FaspaySnapApiException e) {
             e.printStackTrace();
         }

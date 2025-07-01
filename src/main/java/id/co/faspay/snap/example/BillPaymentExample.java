@@ -44,12 +44,15 @@ public class BillPaymentExample {
             // Create payment request
             BillPaymentRequest request = getBillPaymentRequest();
 
+            System.out.println("Request data: " + request.toString());
+
             // Perform bill payment
             System.out.println("Performing bill payment for virtual account: " + request.getVirtualAccountNo());
             BillPaymentResponse response = client.billPayment().payment(request);
 
             // Process the response
             if (response.isSuccess()) {
+                System.out.println("response: " + response.toString());
                 System.out.println("Bill payment successful!");
                 System.out.println("Response code: " + response.getResponseCode());
                 System.out.println("Response message: " + response.getResponseMessage());
@@ -113,7 +116,7 @@ public class BillPaymentExample {
     private static BillPaymentRequest getBillPaymentRequest() {
         // Generate current timestamp and reference number
         ZonedDateTime now = ZonedDateTime.now();
-        String referenceNo = "REF" + now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        String referenceNo = now.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         String transactionDateTime = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"));
         String instructDate = now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX"));
 
@@ -124,7 +127,7 @@ public class BillPaymentExample {
 
         // Set request properties
         request.setPartnerReferenceNo(referenceNo);
-        request.setPartnerServiceId("7008");
+        request.setPartnerServiceId("    7008");
         request.setCustomerNo("08000047816");
         request.setVirtualAccountNo("700808000047816");
         request.setVirtualAccountName("John Doe");

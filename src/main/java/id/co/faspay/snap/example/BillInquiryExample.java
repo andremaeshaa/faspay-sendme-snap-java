@@ -41,7 +41,7 @@ public class BillInquiryExample {
             FaspaySnapClient client = new FaspaySnapClient(config);
 
             // Generate a unique reference number
-            String referenceNo = "REF" + ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+            String referenceNo = ZonedDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
             // Create additional info
             BillInquiryRequest.AdditionalInfo additionalInfo = new BillInquiryRequest.AdditionalInfo();
@@ -51,15 +51,18 @@ public class BillInquiryExample {
             // Create request
             BillInquiryRequest request = new BillInquiryRequest(
                 referenceNo,        // Unique partner reference number
-                "7008",             // Partner service ID
+                "    7008",             // Partner service ID
                 "08000047816",      // Customer number
                 "700808000047816",  // Virtual account number
                 additionalInfo      // Additional info
             );
 
+            System.out.println("Request data: " + request.toString());
             // Perform bill inquiry
             System.out.println("Performing bill inquiry for virtual account: " + request.getVirtualAccountNo());
             BillInquiryResponse response = client.billInquiry().inquiry(request);
+
+            System.out.println("Response data: " + response.toString());
 
             // Process the response
             if (response.isSuccess()) {

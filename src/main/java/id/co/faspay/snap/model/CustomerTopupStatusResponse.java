@@ -242,6 +242,7 @@ public class CustomerTopupStatusResponse {
      *
      * @return True if the transaction is completed, false otherwise
      */
+    @JsonIgnore
     public boolean isTransactionCompleted() {
         return Objects.equals(latestTransactionStatus, "00");
     }
@@ -251,6 +252,7 @@ public class CustomerTopupStatusResponse {
      *
      * @return True if the transaction is pending, false otherwise
      */
+    @JsonIgnore
     public boolean isTransactionPending() {
         return Objects.equals(latestTransactionStatus, "03");
     }

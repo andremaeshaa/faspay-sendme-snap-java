@@ -141,6 +141,7 @@ public class HistoryListResponse {
      *
      * @return The account number, or null if additional info is null
      */
+    @JsonIgnore
     public String getAccountNo() {
         return additionalInfo != null ? additionalInfo.getAccountNo() : null;
     }
@@ -174,6 +175,7 @@ public class HistoryListResponse {
      *
      * @return List of debit transactions
      */
+    @JsonIgnore
     public List<DetailData> getDebitTransactions() {
         return detailData.stream()
                 .filter(data -> data.getAdditionalInfo() != null && 
@@ -186,6 +188,7 @@ public class HistoryListResponse {
      *
      * @return List of credit transactions
      */
+    @JsonIgnore
     public List<DetailData> getCreditTransactions() {
         return detailData.stream()
                 .filter(data -> data.getAdditionalInfo() != null && 
@@ -290,6 +293,7 @@ public class HistoryListResponse {
          *
          * @return The date time as OffsetDateTime, or null if parsing fails
          */
+        @JsonIgnore
         public OffsetDateTime getDateTimeAsOffsetDateTime() {
             try {
                 return dateTime != null ? OffsetDateTime.parse(dateTime) : null;
@@ -434,6 +438,7 @@ public class HistoryListResponse {
          *
          * @return True if status is "SUCCESS", false otherwise
          */
+        @JsonIgnore
         public boolean isSuccess() {
             return Objects.equals(status, "SUCCESS");
         }
@@ -443,6 +448,7 @@ public class HistoryListResponse {
          *
          * @return True if debitCredit is "D", false otherwise
          */
+        @JsonIgnore
         public boolean isDebit() {
             return additionalInfo != null && "D".equals(additionalInfo.getDebitCredit());
         }
@@ -452,6 +458,7 @@ public class HistoryListResponse {
          *
          * @return True if debitCredit is "K", false otherwise
          */
+        @JsonIgnore
         public boolean isCredit() {
             return additionalInfo != null && "K".equals(additionalInfo.getDebitCredit());
         }
@@ -722,6 +729,7 @@ public class HistoryListResponse {
          *
          * @return The from date time as OffsetDateTime, or null if parsing fails
          */
+        @JsonIgnore
         public OffsetDateTime getFromDateTimeAsOffsetDateTime() {
             try {
                 return fromDateTime != null ? OffsetDateTime.parse(fromDateTime) : null;
@@ -735,6 +743,7 @@ public class HistoryListResponse {
          *
          * @return The to date time as OffsetDateTime, or null if parsing fails
          */
+        @JsonIgnore
         public OffsetDateTime getToDateTimeAsOffsetDateTime() {
             try {
                 return toDateTime != null ? OffsetDateTime.parse(toDateTime) : null;

@@ -258,33 +258,40 @@ public class TransferInterbankResponse {
      *
      * @return The beneficiary account name
      */
+    @JsonIgnore
     public String getBeneficiaryAccountName() {
         return this.additionalInfo.get("beneficiaryAccountName");
     }
 
+    @JsonIgnore
     public TransferInterbankResponse setOriginatorCustomerName(String originatorCustomerName) {
         this.originatorInfos.put("originatorCustomerName", originatorCustomerName);
         return this;
     }
 
+    @JsonIgnore
     public TransferInterbankResponse setOriginatorCustomerNo(String originatorCustomerNo) {
         this.originatorInfos.put("originatorCustomerNo", originatorCustomerNo);
         return this;
     }
 
+    @JsonIgnore
     public TransferInterbankResponse setOriginatorBankCode(String originatorBankCode) {
         this.originatorInfos.put("originatorBankCode", originatorBankCode);
         return this;
     }
 
+    @JsonIgnore
     public String getOriginatorCustomerName() {
         return this.originatorInfos.get("originatorCustomerName");
     }
 
+    @JsonIgnore
     public String getOriginatorCustomerNo() {
         return this.originatorInfos.get("originatorCustomerNo");
     }
 
+    @JsonIgnore
     public String getOriginatorBankCode() {
         return this.originatorInfos.get("originatorBankCode");
     }
@@ -295,6 +302,7 @@ public class TransferInterbankResponse {
      * @param beneficiaryAccountName The beneficiary account name
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setBeneficiaryAccountName(String beneficiaryAccountName) {
         this.additionalInfo.put("beneficiaryAccountName", beneficiaryAccountName);
         return this;
@@ -305,6 +313,7 @@ public class TransferInterbankResponse {
      *
      * @return The beneficiary bank name
      */
+    @JsonIgnore
     public String getBeneficiaryBankName() {
         return this.additionalInfo.get("beneficiaryBankName");
     }
@@ -315,6 +324,7 @@ public class TransferInterbankResponse {
      * @param beneficiaryBankName The beneficiary bank name
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setBeneficiaryBankName(String beneficiaryBankName) {
         this.additionalInfo.put("beneficiaryBankName", beneficiaryBankName);
         return this;
@@ -325,6 +335,7 @@ public class TransferInterbankResponse {
      *
      * @return The instruct date
      */
+    @JsonIgnore
     public String getInstructDate() {
         return this.additionalInfo.get("instructDate");
     }
@@ -335,6 +346,7 @@ public class TransferInterbankResponse {
      * @param instructDate The instruct date
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setInstructDate(String instructDate) {
         this.additionalInfo.put("instructDate", instructDate);
         return this;
@@ -345,6 +357,7 @@ public class TransferInterbankResponse {
      *
      * @return The transaction description
      */
+    @JsonIgnore
     public String getTransactionDescription() {
         return this.additionalInfo.get("transactionDescription");
     }
@@ -355,6 +368,7 @@ public class TransferInterbankResponse {
      * @param transactionDescription The transaction description
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setTransactionDescription(String transactionDescription) {
         this.additionalInfo.put("transactionDescription", transactionDescription);
         return this;
@@ -365,6 +379,7 @@ public class TransferInterbankResponse {
      *
      * @return The callback URL
      */
+    @JsonIgnore
     public String getCallbackUrl() {
         return this.additionalInfo.get("callbackUrl");
     }
@@ -375,6 +390,7 @@ public class TransferInterbankResponse {
      * @param callbackUrl The callback URL
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setCallbackUrl(String callbackUrl) {
         this.additionalInfo.put("callbackUrl", callbackUrl);
         return this;
@@ -385,6 +401,7 @@ public class TransferInterbankResponse {
      *
      * @return The latest transaction status
      */
+    @JsonIgnore
     public String getLatestTransactionStatus() {
         return this.additionalInfo.get("latestTransactionStatus");
     }
@@ -395,6 +412,7 @@ public class TransferInterbankResponse {
      * @param latestTransactionStatus The latest transaction status
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setLatestTransactionStatus(String latestTransactionStatus) {
         this.additionalInfo.put("latestTransactionStatus", latestTransactionStatus);
         return this;
@@ -405,6 +423,7 @@ public class TransferInterbankResponse {
      *
      * @return The transaction status description
      */
+    @JsonIgnore
     public String getTransactionStatusDesc() {
         return this.additionalInfo.get("transactionStatusDesc");
     }
@@ -415,6 +434,7 @@ public class TransferInterbankResponse {
      * @param transactionStatusDesc The transaction status description
      * @return This response object
      */
+    @JsonIgnore
     public TransferInterbankResponse setTransactionStatusDesc(String transactionStatusDesc) {
         this.additionalInfo.put("transactionStatusDesc", transactionStatusDesc);
         return this;
@@ -427,7 +447,7 @@ public class TransferInterbankResponse {
      */
     @JsonIgnore
     public boolean isSuccess() {
-        return Objects.equals(responseCode, "2003600");
+        return Objects.equals(responseCode, "2001800");
     }
 
     @Override

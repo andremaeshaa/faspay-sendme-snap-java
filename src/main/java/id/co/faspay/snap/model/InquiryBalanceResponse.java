@@ -129,6 +129,7 @@ public class InquiryBalanceResponse {
      *
      * @return The cash balance AccountInfo, or null if not found
      */
+    @JsonIgnore
     public AccountInfo getCashBalance() {
         return accountInfos.stream()
                 .filter(info -> "CASH".equals(info.getBalanceType()))
@@ -141,6 +142,7 @@ public class InquiryBalanceResponse {
      *
      * @return The deposit balance AccountInfo, or null if not found
      */
+    @JsonIgnore
     public AccountInfo getDepositBalance() {
         return accountInfos.stream()
                 .filter(info -> "DEPOSIT".equals(info.getBalanceType()))
@@ -309,6 +311,7 @@ public class InquiryBalanceResponse {
          *
          * @return True if status is "0001", false otherwise
          */
+        @JsonIgnore
         public boolean isActive() {
             return Objects.equals(status, "0001");
         }

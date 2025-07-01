@@ -210,11 +210,13 @@ public class CustomerTopupResponse {
         }
 
         // Utility method to check if transaction is pending
+        @JsonIgnore
         public boolean isPending() {
             return "03".equals(latestTransactionStatus);
         }
 
         // Utility method to check if transaction is successful
+        @JsonIgnore
         public boolean isTransactionSuccess() {
             return "00".equals(latestTransactionStatus);
         }

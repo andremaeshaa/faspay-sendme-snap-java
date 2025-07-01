@@ -33,9 +33,12 @@ public class CustomerTopupExample {
 
             CustomerTopupRequest request = getCustomerTopupRequest();
 
+            System.out.println("Request data: " + request.toString());
+
             CustomerTopupResponse response = client.customerTopup().topup(request);
 
             if (response.isSuccess()) {
+                System.out.println("Response data: " + response.toString());
                 System.out.println(response.getResponseCode());
                 System.out.println(response.getResponseMessage());
                 System.out.println(response.getAdditionalInfo().getLatestTransactionStatus());
@@ -54,7 +57,7 @@ public class CustomerTopupExample {
         CustomerTopupRequest request = new CustomerTopupRequest();
         CustomerTopupRequest.AdditionalInfo additionalInfoRequest = new CustomerTopupRequest.AdditionalInfo();
 
-        request.setPartnerReferenceNo("20250624103326251");
+        request.setPartnerReferenceNo("20250624103326254");
         request.setCustomerNumber("0812254830");
         request.setAmount(amount);
         request.setTransactionDate("2025-06-24T10:33:26+07:00");

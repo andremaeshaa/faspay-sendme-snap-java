@@ -31,9 +31,12 @@ public class CustomerTopupStatusExample {
 
             CustomerTopupStatusRequest request = new CustomerTopupStatusRequest("20250624103326251", "150207", "38");
 
+            System.out.println("Request data: " + request.toString());
+
             CustomerTopupStatusResponse response = client.customerTopupStatus().status(request);
 
             if (response.isSuccess()) {
+                System.out.println("Response data: " + response.toString());
                 System.out.println("responseCode: " + response.getResponseCode());
                 System.out.println("Latest Transaction Status: " + response.getLatestTransactionStatus());
             }
